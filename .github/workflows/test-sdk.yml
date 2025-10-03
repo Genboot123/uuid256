@@ -18,6 +18,8 @@ jobs:
 
       - name: Install Deno
         uses: denoland/setup-deno@v1
+        with:
+          deno-version: "2.5.2"
 
       - name: Show Deno version
         run: |
