@@ -38,14 +38,15 @@ UUIDs) and stays interoperable with ERC‑721/1155 `tokenId`.
 
 ### Problem
 
-Off‑chain systems (databases, APIs) use UUIDs. ERC‑721/1155 use `uint256` token IDs.
-This ID format mismatch forces custom mapping logic and tight coupling between
-off‑chain and on‑chain data.
+Off‑chain systems (databases, APIs) use UUIDs. ERC‑721/1155 use `uint256` token
+IDs. This ID format mismatch forces custom mapping logic and tight coupling
+between off‑chain and on‑chain data.
 
 Common workarounds have trade‑offs:
 
 1. Maintain UUID↔`uint256` mapping tables → more code, more failure points
-2. Switch to integers everywhere → lose UUID features (collision resistance, time‑ordering)
+2. Switch to integers everywhere → lose UUID features (collision resistance,
+   time‑ordering)
 3. Put UUIDs on‑chain → breaks ERC compatibility
 
 ### Solution

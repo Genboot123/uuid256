@@ -1,7 +1,7 @@
 {
   "name": "@posaune0423/uuid256",
   "description": "uuid256 SDK: UUID v7 canonical ↔ uint256 bridge (lower 128 bits)",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "tasks": {
     "dev": "deno run --watch src/mod.ts"
   },

@@ -24,7 +24,9 @@
 </p>
 </div>
 
-`uuid256` はアプリの正準 ID を UUID v7 とし、EVM `uint256` へは「下位 128bit = UUID、上位 128bit = 0」でブリッジします。オフチェーン（DB / API）の UUID 資産を保ちつつ、ERC‑721/1155 の `tokenId` と互換性を維持します。
+`uuid256` はアプリの正準 ID を UUID v7 とし、EVM `uint256` へは「下位 128bit =
+UUID、上位 128bit = 0」でブリッジします。オフチェーン（DB / API）の UUID
+資産を保ちつつ、ERC‑721/1155 の `tokenId` と互換性を維持します。
 
 - コントラクト: `packages/contracts`（`Uuid256.sol`）
 - ライブラリ (Deno/TypeScript): `packages/lib`
@@ -34,7 +36,8 @@
 
 ### 課題
 
-オフチェーン（DB / API）は UUID、ERC‑721/1155 は `uint256` の tokenId を使います。この形式の違いが、独自マッピングや密結合を生みます。
+オフチェーン（DB / API）は UUID、ERC‑721/1155 は `uint256` の tokenId
+を使います。この形式の違いが、独自マッピングや密結合を生みます。
 
 よくある回避策と欠点：
 
