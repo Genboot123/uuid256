@@ -15,5 +15,12 @@
     "coverage",
     "node_modules"
   ],
-  "exports": "./src/mod.ts"
+  "exports": "./src/mod.ts",
+  "publish": {
+    "include": [
+      "../../README.md",
+      "LICENSE",
+      "src/**/*.ts"
+    ]
+  }
 }
