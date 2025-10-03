@@ -17,10 +17,11 @@
   ],
   "exports": "./src/mod.ts",
   "publish": {
-    "include": [
-      "README.md",
-      "LICENSE",
-      "src/**/*.ts"
+    "exclude": [
+      "coverage",
+      "node_modules",
+      "scripts",
+      "tests"
     ]
   }
 }
