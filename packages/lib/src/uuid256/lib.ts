@@ -57,7 +57,7 @@ export function asUuidV7(s: string): Uuid {
 /**
  * Generates a random UUID.
  */
-export function generateUuid() {
+export function generateUuid(): Uuid {
   return crypto.randomUUID();
 }
 
