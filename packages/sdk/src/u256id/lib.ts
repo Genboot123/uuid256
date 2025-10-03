@@ -64,6 +64,17 @@ function _bigIntToBeBytes(x: bigint, len: number): Uint8Array {
 
 /** ---- canonical helpers ---- **/
 
+/**
+ * Check whether a string is in canonical form (`0x` + 64 lowercase hex).
+ *
+ * @param s String to validate.
+ * @returns `true` if the string is canonical, otherwise `false`.
+ * @example
+ * ```ts
+ * isCanonical("0x" + "00".repeat(32)); // true
+ * isCanonical("deadbeef");             // false
+ * ```
+ */
 export const isCanonical = (s: string): s is U256Hex => RE_CANON.test(s);
 
 /** Format bigint 256-bit to canonical 0x+64 lowercase hex */
@@ -74,6 +85,18 @@ function toCanonical(x: bigint): U256Hex {
 
 /** ---- Base58 (HR) ---- **/
 
+/**
+ * Convert a canonical `U256Hex` to the human‑readable Base58 form with `u2:`
+ * prefix.
+ *
+ * @param id Canonical identifier.
+ * @returns Base58 string like `"u2:..."`.
+ * @example
+ * ```ts
+ * const id = u256idV0();
+ * toBase58(id); // "u2:..."
+ * ```
+ */
 export function toBase58(id: U256Hex): string {
   const x = BigInt(id); // canonical is valid 0x+hex, BigInt parses it
   if (x === 0n) return "u2:1"; // 0 encodes to "1"
@@ -87,6 +110,18 @@ export function toBase58(id: U256Hex): string {
   return "u2:" + s;
 }
 
+/**
+ * Parse a Base58 human‑readable string (with or without `u2:` prefix) back to
+ * canonical form.
+ *
+ * @param hr Base58 string, optionally prefixed with `"u2:"`.
+ * @returns Canonical `U256Hex`.
+ * @example
+ * ```ts
+ * const id = fromBase58("u2:3m...");
+ * isCanonical(id); // true
+ * ```
+ */
 export function fromBase58(hr: string): U256Hex {
   const s = hr.startsWith("u2:") ? hr.slice(3) : hr;
   assert(/^[1-9A-HJ-NP-Za-km-z]+$/.test(s), "bad Base58 chars");
@@ -99,26 +134,57 @@ export function fromBase58(hr: string): U256Hex {
   return toCanonical(x);
 }
 
-/** Short (display-only; do NOT accept as input) */
+/**
+ * Create a short display‑only representation. Do not accept as input.
+ *
+ * @param id Canonical identifier.
+ * @returns A string like `"u2s:deadbeef…cafebabe"`.
+ */
 export const toShort = (id: U256Hex): string =>
   `u2s:${id.slice(2, 10)}…${id.slice(-8)}`;
 
-/** Version nibble (top 4 bits) */
+/**
+ * Read the 4‑bit version nibble from the top of the 256‑bit value.
+ *
+ * @param id Canonical identifier.
+ * @returns Integer in range 0..15.
+ */
 export function versionOf(id: U256Hex): number {
   return Number((BigInt(id) >> 252n) & 0xfn);
 }
 
 /** ---- generators ---- **/
 
-/** v0: pure random (vvvv=0000 | R[252]) */
+/**
+ * Generate a v0 identifier: purely random, version nibble `0000`.
+ *
+ * @returns New random canonical `U256Hex`.
+ * @example
+ * ```ts
+ * const id = u256idV0();
+ * versionOf(id); // 0
+ * ```
+ */
 export function u256idV0(): U256Hex {
   const b = rnd(32);
   b[0] &= 0x0f; // clear top 4 bits -> version=0
   return ("0x" + toHex(b)) as U256Hex;
 }
 
-/** v1: time-sortable vvvv(0001)|T48|N32|C16|R156
- * T=Unix ms, N=node id (optional, random fixed), C=monotonic counter per ms
+/**
+ * Generate a v1 identifier (time‑sortable): `0001|T48|N32|C16|R156`.
+ *
+ * T = unix milliseconds, N = node id (optional, fixed; random if omitted),
+ * C = per‑millisecond monotonic counter, R = random bits.
+ *
+ * @param opts Optional options; when provided, `opts.node32` fixes the node id.
+ * @returns New canonical `U256Hex` with version nibble 1.
+ * @example
+ * ```ts
+ * const a = u256idV1();
+ * const b = u256idV1();
+ * // `a` and `b` will sort by time when compared lexicographically as hex
+ * ```
  */
 let _node32: number | undefined;
 let _lastMs = -1;
@@ -158,6 +224,13 @@ export function u256idV1(opts?: { node32?: number }): U256Hex {
  * UUID (16B) <-> lower 128 bits of uint256 (upper 128 bits must be zero)
  */
 
+/**
+ * Convert a UUID string (36‑char with dashes or 32‑hex) into the lower 128 bits
+ * of a 256‑bit value. Upper 128 bits are zero.
+ *
+ * @param uuid Standard UUID string.
+ * @returns Canonical `U256Hex`.
+ */
 export function uuidToU256(uuid: string): U256Hex {
   // accept "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" or 32hex
   const cleaned = uuid.replace(/-/g, "").toLowerCase();
@@ -168,6 +241,13 @@ export function uuidToU256(uuid: string): U256Hex {
   return toCanonical(x);
 }
 
+/**
+ * Convert a canonical `U256Hex` into a UUID string. Requires the upper 128 bits
+ * to be zero.
+ *
+ * @param id Canonical identifier.
+ * @returns UUID string in `8-4-4-4-12` format.
+ */
 export function u256ToUuid(id: U256Hex): string {
   const x = BigInt(id);
   assert((x >> 128n) === 0n, "upper 128 bits must be zero");
@@ -180,13 +260,31 @@ export function u256ToUuid(id: U256Hex): string {
 
 /** ---- helpers for canonical I/O ---- **/
 
-/** Ensure string is canonical; throw otherwise */
+/**
+ * Assert that a string is canonical; throws if invalid.
+ *
+ * @param s Input string.
+ * @returns The same string, typed as `U256Hex` on success.
+ * @example
+ * ```ts
+ * const id = asCanonical("0x" + "00".repeat(32));
+ * // ok: id is U256Hex here
+ * ```
+ */
 export function asCanonical(s: string): U256Hex {
   assert(isCanonical(s), "not canonical 0x+64hex");
   return s as U256Hex;
 }
 
-/** Example: generate & format */
+/**
+ * Convenience helper that demonstrates common operations for docs/testing.
+ *
+ * @returns A small sample of generated/derived values.
+ * @example
+ * ```ts
+ * const { v0, v1, hr, short } = example();
+ * ```
+ */
 export function example(): {
   v0: U256Hex;
   v1: U256Hex;
