@@ -25,7 +25,7 @@
 
 </div>
 
-This SDK makes UUID v7 the canonical application identifier and bridges to EVM
+`uuid256` makes UUID v7 the canonical application identifier and bridges to EVM
 `uint256` by packing the UUID into the lower 128 bits. The upper 128 bits MUST
 be zero. This keeps Web2 compatibility (UUIDs in databases, APIs) while
 remaining interoperable with ERC‑721/1155 `tokenId`.
@@ -160,8 +160,6 @@ described in RFC 2119.
   hex (upper 128 bits are zero)
 - `u256ToUuid(id: string): Uuid` — throws `INVALID_U256_FORMAT` or
   `UPPER128_NOT_ZERO`
-- `setCrypto(crypto: Crypto): void` — provide WebCrypto (for Node environments
-  without `globalThis.crypto`)
 
 ## Examples
 
