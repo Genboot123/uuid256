@@ -1,10 +1,12 @@
-import { u256id } from "u256id";
+import { uuid256 } from "u256id";
 
-const id = u256id.u256idV1();
-console.log("ESM canonical:", id);
-console.log("version:", u256id.versionOf(id));
-console.log("hr:", u256id.toBase58(id));
-console.log("short:", u256id.toShort(id));
+const uuid = uuid256.generateUuidV7();
+const bridged = uuid256.uuidToU256(uuid);
+const back = uuid256.u256ToUuid(bridged);
+
+console.log("uuid v7:", uuid);
+console.log("bridged u256:", bridged);
+console.log("roundtrip uuid:", back);
 
 if (typeof globalThis.crypto === "undefined") {
   throw new Error("WebCrypto should be available in ESM (Node >=18) or via polyfill");

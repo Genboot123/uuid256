@@ -1,12 +1,13 @@
-const { u256id } = require("u256id");
+const { uuid256 } = require("u256id");
 // Node CJS may not have globalThis.crypto: use node:crypto.webcrypto
 if (typeof globalThis.crypto === "undefined") {
   const { webcrypto } = require("node:crypto");
-  u256id.setCrypto(webcrypto);
+  uuid256.setCrypto(webcrypto);
 }
 
-const id = u256id.u256idV1();
-console.log("CJS canonical:", id);
-console.log("version:", u256id.versionOf(id));
-console.log("hr:", u256id.toBase58(id));
-console.log("short:", u256id.toShort(id));
+const uuid = uuid256.generateUuidV7();
+const bridged = uuid256.uuidToU256(uuid);
+const back = uuid256.u256ToUuid(bridged);
+console.log("uuid v7:", uuid);
+console.log("bridged u256:", bridged);
+console.log("roundtrip uuid:", back);

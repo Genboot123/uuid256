@@ -9,13 +9,14 @@
     <h1>U256ID Browser Example</h1>
     <pre id="out"></pre>
     <script type="module">
-      import { u256id } from "/node_modules/u256id/esm/mod.js";
-      const id = u256id.u256idV1();
+      import { uuid256 } from "/node_modules/u256id/esm/mod.js";
+      const uuid = uuid256.generateUuidV7();
+      const bridged = uuid256.uuidToU256(uuid);
+      const back = uuid256.u256ToUuid(bridged);
       const lines = [
-        `canonical: ${id}`,
-        `version: ${u256id.versionOf(id)}`,
-        `hr: ${u256id.toBase58(id)}`,
-        `short: ${u256id.toShort(id)}`,
+        `uuid v7: ${uuid}`,
+        `bridged u256: ${bridged}`,
+        `roundtrip uuid: ${back}`,
       ];
       document.getElementById("out").textContent = lines.join("\n");
       console.log(lines.join("\n"));

@@ -1,43 +1,33 @@
 import { expect } from "@std/expect";
 import { test } from "@std/testing/bdd";
 import {
-  asCanonical,
-  fromBase58,
-  isCanonical,
-  toBase58,
-  toShort,
-  u256idV0,
-  u256idV1,
-  versionOf,
-} from "../src/u256id/mod.ts";
+  asUuid,
+  generateUuidV7,
+  isUuid,
+  u256ToUuid,
+  uuidToU256,
+} from "../src/uuid256/mod.ts";
 
-test("v0 canonical shape and version", () => {
-  const id = u256idV0();
-  expect(isCanonical(id)).toBe(true);
-  expect(versionOf(id)).toBe(0);
+test("generateUuidV7 produces valid v7 UUID", () => {
+  const uuid = generateUuidV7();
+  expect(isUuid(uuid)).toBe(true);
 });
 
-test("v1 canonical shape and version", () => {
-  const id = u256idV1();
-  expect(isCanonical(id)).toBe(true);
-  expect(versionOf(id)).toBe(1);
+test("uuidToU256 -> u256ToUuid round trip", () => {
+  const uuid = generateUuidV7();
+  const id = uuidToU256(uuid);
+  const back = u256ToUuid(id);
+  expect(back).toBe(uuid.toLowerCase());
 });
 
-test("Base58 round trip", () => {
-  const id = u256idV0();
-  const hr = toBase58(id);
-  const back = fromBase58(hr);
-  expect(back).toBe(id);
+test("u256ToUuid rejects when upper 128 bits are non-zero", () => {
+  const bad = (1n << 200n) | 0xdeadbeefn;
+  const badHex = "0x" + bad.toString(16).padStart(64, "0");
+  expect(() => u256ToUuid(badHex)).toThrow("UPPER128_NOT_ZERO");
 });
 
-test("Short format is non-empty and prefixed", () => {
-  const id = u256idV0();
-  const s = toShort(id);
-  expect(s.startsWith("u2s:")).toBe(true);
-  expect(s.length).toBeGreaterThan(10);
-});
-
-test("asCanonical validates", () => {
-  const id = u256idV0();
-  expect(asCanonical(id)).toBe(id);
+test("asUuid validates format", () => {
+  const good = generateUuidV7();
+  expect(asUuid(good)).toBe(good);
+  expect(() => asUuid("not-a-uuid")).toThrow();
 });
