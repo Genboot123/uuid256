@@ -3,10 +3,10 @@ pragma solidity ^0.8.24;
 
 import {ERC721} from "lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
 import {Strings} from "lib/openzeppelin-contracts/contracts/utils/Strings.sol";
-import {U256ID} from "./U256ID.sol";
+import {Uuid256} from "./Uuid256.sol";
 
 contract MyNFT is ERC721 {
-    using U256ID for uint256;
+    using Uuid256 for uint256;
     using Strings for uint256;
 
     string private _base;
@@ -15,9 +15,9 @@ contract MyNFT is ERC721 {
         _base = base_;
     }
 
-    /// @notice Off-chain generated U256ID (uint256) を受け入れてミント
+    /// @notice Off-chain generated bridged uint256 tokenId (upper 128 bits MUST be zero)
     function mint(address to, uint256 tokenId) external {
-        require(tokenId.isSupported(), "U256ID: unsupported version"); // v0 or v1
+        require(Uuid256.upper128Zero(tokenId), "UPPER128_NOT_ZERO");
         _mint(to, tokenId);
     }
 
@@ -25,7 +25,7 @@ contract MyNFT is ERC721 {
         return _base;
     }
 
-    /// @notice tokenURI: base + 0x + 64hex（正準）
+    /// @notice tokenURI: base + 0x + 64hex
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         _requireOwned(tokenId);
         return string.concat(_baseURI(), Strings.toHexString(tokenId, 32));

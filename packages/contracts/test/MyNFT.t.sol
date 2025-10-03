@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
 import {MyNFT} from "../src/MyNFT.sol";
-import {U256ID} from "../src/U256ID.sol";
+import {Uuid256} from "../src/Uuid256.sol";
 
 contract MyNFTTest is Test {
     MyNFT nft;
@@ -12,33 +12,27 @@ contract MyNFTTest is Test {
         nft = new MyNFT("MyNFT", "MNFT", "ipfs://base/");
     }
 
-    function test_mint_v0_accepts_and_tokenURI_canonical() public {
-        // v0: ensure top nibble zero
-        uint256 id0 = uint256(keccak256("some-random")) & ((uint256(1) << 252) - 1);
-        assertTrue(U256ID.isSupported(id0));
+    function test_mint_accepts_when_upper128_zero_and_tokenURI_canonical() public {
+        bytes16 uuid = 0x01890f882bbf7c84bec06fbb8cbfcdad;
+        uint256 tokenId = Uuid256.fromBytes16(uuid); // upper 128 = 0
 
         address to = address(0xBEEF);
-        nft.mint(to, id0);
-        assertEq(nft.ownerOf(id0), to);
+        nft.mint(to, tokenId);
+        assertEq(nft.ownerOf(tokenId), to);
 
-        string memory uri = nft.tokenURI(id0);
+        string memory uri = nft.tokenURI(tokenId);
         // Should start with base and contain 0x + 64 hex
         assertTrue(_startsWith(uri, "ipfs://base/0x"));
         assertEq(bytes(uri).length, bytes(string.concat("ipfs://base/0x", _hexLen(32))).length);
     }
 
-    function test_mint_v1_accepts() public {
-        uint256 id1 = (uint256(1) << 252) | (uint256(keccak256("rest")) & ((uint256(1) << 252) - 1));
-        assertTrue(U256ID.isSupported(id1));
-        nft.mint(address(this), id1);
-        assertEq(nft.ownerOf(id1), address(this));
-    }
-
-    function test_mint_reverts_for_unsupported_version() public {
-        uint256 bad = (uint256(2) << 252) | (uint256(keccak256("rest")) & ((uint256(1) << 252) - 1));
-        vm.expectRevert(bytes("U256ID: unsupported version"));
+    function test_mint_reverts_when_upper128_nonzero() public {
+        uint256 bad = (uint256(1) << 200) | 0xdeadbeef;
+        vm.expectRevert(bytes("UPPER128_NOT_ZERO"));
         nft.mint(address(this), bad);
     }
+
+    // version checks removed: UUID bridge enforces only upper128==0
 
     // --- helpers ---
     function _startsWith(string memory s, string memory prefix) internal pure returns (bool) {
