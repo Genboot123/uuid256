@@ -12,8 +12,8 @@
       <a href="https://jsr.io/@posaune0423/uuid256">
         <img src="https://jsr.io/badges/@posaune0423/uuid256/score" alt="" />
       </a>
-      <a href="https://github.com/posaune0423/uuid256/actions/workflows/test-sdk.yml">
-        <img alt="CI" src="https://github.com/posaune0423/uuid256/actions/workflows/test-sdk.yml/badge.svg" />
+      <a href="https://github.com/posaune0423/uuid256/actions/workflows/test-lib.yml">
+        <img alt="test-lib" src="https://github.com/posaune0423/uuid256/actions/workflows/test-lib.yml/badge.svg" />
       </a>
       <a href="https://www.npmjs.com/package/uuid256">
         <img src="https://img.shields.io/npm/v/uuid256.svg" alt="npm package" />
