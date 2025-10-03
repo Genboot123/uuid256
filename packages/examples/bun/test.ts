@@ -24,7 +24,7 @@ async function main() {
   ] as const;
 
   const uuid = uuid256.generateUuidV7();
-  console.log("[Bun]  UUID v7:", uuid);
+  console.log("[Bun]  UUID:", uuid);
   const bridged = uuid256.uuidToU256(uuid);
   console.log("[Bun]  Bridged:", bridged);
   const tokenId = BigInt(bridged);

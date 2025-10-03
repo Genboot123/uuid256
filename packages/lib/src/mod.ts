@@ -5,11 +5,12 @@
  *
  * @example
  * ```ts
- * import { uuid256 } from "@posaune0423/u256id";
+ * import { generateUuidV7, uuidToU256, u256ToUuid } from "@posaune0423/uuid256";
  *
- * const id = uuid256.u256idV0();
- * const hr = uuid256.toBase58(id);
+ * const uuid = generateUuidV7();
+ * const uint256 = uuidToU256(uuid);
+ * const back = u256ToUuid(uint256);
  * ```
  * @module
  */
-export * as uuid256 from "./uuid256/mod.ts";
+export * from "./uuid256/mod.ts";

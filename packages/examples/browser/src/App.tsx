@@ -11,7 +11,7 @@ import { QueryStep } from "./components/QueryStep";
 import { Toast } from "./components/Toast";
 
 const STEPS = [
-  { id: 1, title: "Generate", description: "Create UUID v7" },
+  { id: 1, title: "Generate", description: "Create UUID" },
   { id: 2, title: "Bridge", description: "Convert to uint256" },
   { id: 3, title: "Mint", description: "Create NFT on-chain" },
   { id: 4, title: "Query", description: "Retrieve NFT data" },
@@ -111,12 +111,12 @@ export function App() {
             </h1>
           </div>
           <p className="text-slate-300 text-xs md:text-base lg:text-lg max-w-3xl mx-auto px-2">
-            Learn how UUID v7 bridges to uint256 for on-chain NFTs with
+            Learn how UUID bridges to uint256 for on-chain NFTs with
             reversible conversion
           </p>
           <div className="flex items-center justify-center gap-1 md:gap-2 mt-2 md:mt-4 text-[10px] md:text-sm text-slate-400">
             <div className="px-1.5 py-0.5 md:px-3 md:py-1 bg-slate-800/50 rounded-full border border-slate-700">
-              UUID v7
+              UUID
             </div>
             <div className="px-1.5 py-0.5 md:px-3 md:py-1 bg-slate-800/50 rounded-full border border-slate-700">
               ↔

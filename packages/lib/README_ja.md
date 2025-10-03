@@ -2,7 +2,7 @@
 
 <h1>uuid256 🔑</h1>
 
-<p>UUID v7 を正準 ID とし、EVM の <code>uint256</code> とは「下位 128bit = UUID、上位 128bit = 0」で相互変換</p>
+<p>UUID を正準 ID とし、EVM の <code>uint256</code> とは「下位 128bit = UUID、上位 128bit = 0」で相互変換</p>
 
 <p>
 
@@ -24,9 +24,12 @@
 </p>
 </div>
 
-`uuid256` はアプリの正準 ID を UUID v7 とし、EVM `uint256` へは「下位 128bit =
+`uuid256` はアプリの正準 ID を UUID とし、EVM `uint256` へは「下位 128bit =
 UUID、上位 128bit = 0」でブリッジします。オフチェーン（DB / API）の UUID
 資産を保ちつつ、ERC‑721/1155 の `tokenId` と互換性を維持します。
+
+検証・ブリッジは [RFC 4122](https://www.rfc-editor.org/rfc/rfc4122) のすべての
+UUID バージョンをサポートします（新規実装には v7 を推奨）。
 
 - コントラクト: `packages/contracts`（`Uuid256.sol`）
 - ライブラリ (Deno/TypeScript): `packages/lib`
@@ -49,7 +52,7 @@ UUID、上位 128bit = 0」でブリッジします。オフチェーン（DB / 
 
 決定論的・双方向・ステートレスなブリッジ：
 
-- ✅ UUID v7 を正準 ID として維持
+- ✅ UUID を推奨する正準 ID
 - ✅ 下位 128bit に決定論的にエンコード（上位 128bit は常に 0）
 - ✅ 完全に可逆
 - ✅ マッピング不要（純粋アルゴリズム）
@@ -105,7 +108,7 @@ uuid256.setCrypto(webcrypto);
 
 ### 数値例
 
-- UUID v7（文字列）: `01234567-89ab-7cde-8f01-23456789abcdef`
+- UUID（文字列）: `01234567-89ab-7cde-8f01-23456789abcdef`
 - ダッシュ除去・小文字（32 hex）: `0123456789ab7cde8f0123456789abcdef`
 - `uint256` へブリッジ:
   - 下位 128bit = `0x0123456789ab7cde8f0123456789abcdef`
@@ -127,7 +130,8 @@ uuid256.setCrypto(webcrypto);
 
 ### 位置付け
 
-UUID v7 と EVM `uint256` の相互ブリッジを定義します。
+UUID（RFC 4122）と EVM `uint256` の相互ブリッジを定義します（新規には v7
+推奨）。
 
 ### 用語
 
@@ -135,49 +139,53 @@ UUID v7 と EVM `uint256` の相互ブリッジを定義します。
 
 ### 正準 ID
 
-アプリの正準 ID は UUID v7 としなければなりません（MUST）。
+- 正準 ID は UUID（v7 推奨）です。アプリは UUID
+  文字列を主キーとして扱います（MUST）。
 
 ### ブリッジ表現
 
-ブリッジ ID は EVM `uint256` とし、上位 128bit を 0、下位 128bit に UUID
-を格納します（MUST）。 表現は `0x` + 64 桁の小文字 16 進数とします（MUST）。
+- ブリッジ ID は EVM `uint256` とし、上位 128bit を 0、下位 128bit に UUID
+  を格納します（MUST）。 表現は `0x` + 64 桁の小文字 16 進数とします（MUST）。
 
 ### 変換
 
 - UUID → `uint256`: 下位 128 = UUID、上位 128 = 0。
 - `uint256` → UUID: `0x+64hex` でない入力（`INVALID_U256_FORMAT`）や、上位 128 ≠
-  0 （`UPPER128_NOT_ZERO`）は拒否します（MUST）。
+  0（`UPPER128_NOT_ZERO`）は拒否します（MUST）。
 
 ### 検証
 
-- UUID は UUIDv7 構文（`8-4-4-4-12`、version=7、RFC 4122
-  variant）を満たす必要があります（MUST）。
-- 実装は小文字化してもかまいません（MAY）。不一致は `INVALID_UUID_FORMAT`
+- UUID 入力は RFC 4122 に準拠した `8-4-4-4-12` 形式と正しい variant
+  を満たす必要があります（バージョンは任意）。
+- 小文字化は許容します（MAY）。不一致は `INVALID_UUID_FORMAT`
   を投げます（MUST）。
 
 ### エラー
 
 | コード                | 発生条件                  |
 | --------------------- | ------------------------- |
-| `INVALID_UUID_FORMAT` | UUIDv7 構文に一致しない   |
+| `INVALID_UUID_FORMAT` | UUID 構文に一致しない     |
 | `INVALID_U256_FORMAT` | `0x` + 64 hex ではない    |
 | `UPPER128_NOT_ZERO`   | 逆変換時に上位 128bit ≠ 0 |
 
 ### セキュリティ
 
-- UUID 生成は CSPRNG を必ず使用します（MUST）。
+- UUID 生成は該当部分で CSPRNG を使用する必要があります（MUST）。
 - 逆変換時は上位 128bit = 0 の検証を必須とします（MUST）。
 
 ---
 
 ## API
 
-- `generateUuidV7(): Uuid` — UUID v7（小文字）を生成。CSPRNG 使用。
-- `isUuid(s: string): s is Uuid`
-- `asUuid(s: string): Uuid` — 不正形式は `INVALID_UUID_FORMAT`
-- `uuidToU256(uuid: string): U256Hex` — 正準 `0x+64hex` を返す（上位 128 = 0）
-- `u256ToUuid(id: string): Uuid` — `INVALID_U256_FORMAT` / `UPPER128_NOT_ZERO`
-  を投げ得る
+- `generateUuidV7(): Uuid` — UUID（小文字）を生成。CSPRNG 使用。
+- `generateUuidV5(namespace: string, data: string | Uint8Array): Promise<Uuid>`
+  — 名前ベースの決定論的 UUID。
+- `isUuid(s: string): s is Uuid` — RFC 4122 の全バージョンを受け付ける。
+- `isUuidV7(s: string): s is Uuid` — v7のみ検証。
+- `asUuid(s: string): Uuid` — 不正形式は `INVALID_UUID_FORMAT`。
+- `asUuidV7(s: string): Uuid` — 不正形式は `INVALID_UUID_FORMAT`。
+- `uuidToU256(uuid: string): U256Hex` — 正準 `0x+64hex` を返す（上位 128 = 0）。
+- `u256ToUuid(id: string): Uuid` — `INVALID_U256_FORMAT` / `UPPER128_NOT_ZERO`。
 
 ## サンプル
 

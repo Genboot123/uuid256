@@ -49,7 +49,7 @@ export function OutputDisplay({ output, result }: OutputDisplayProps) {
             </div>
           </div>
 
-          {/* UUID v7 */}
+          {/* UUID */}
           <div className="group p-4 bg-slate-800/50 rounded-xl border border-slate-700/30 hover:border-slate-600/50 transition-colors">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
@@ -59,7 +59,7 @@ export function OutputDisplay({ output, result }: OutputDisplayProps) {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
                     </svg>
                   </div>
-                  <p className="text-sm font-medium text-slate-300">UUID v7</p>
+                  <p className="text-sm font-medium text-slate-300">UUID</p>
                 </div>
                 <p className="text-sm text-white font-mono break-all">{result.uuid}</p>
               </div>

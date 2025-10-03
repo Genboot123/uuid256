@@ -256,7 +256,7 @@ const uuid = uuid256.u256ToUuid(tokenId);
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
                       </svg>
                     </div>
-                    <p className="text-xs md:text-sm font-medium text-slate-300">UUID v7</p>
+                    <p className="text-xs md:text-sm font-medium text-slate-300">UUID</p>
                   </div>
                   <p className="text-[10px] md:text-sm text-white font-mono break-all">{queryResult.queriedUuid}</p>
                 </div>

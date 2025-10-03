@@ -22,7 +22,7 @@ export function GenerateStep({ uuid, onGenerate, isActive }: GenerateStepProps) 
 
   const codeExample = `import { uuid256 } from "uuid256";
 
-// Generate a new UUID v7
+// Generate a new UUID
 const uuid = uuid256.generateUuidV7();
 // => "${uuid || "01948b2e-5890-7000-8000-0123456789ab"}"`;
 
@@ -40,7 +40,7 @@ const uuid = uuid256.generateUuidV7();
             </svg>
           </div>
           <div>
-            <h3 className="text-sm md:text-lg font-semibold text-white">Generate UUID v7</h3>
+            <h3 className="text-sm md:text-lg font-semibold text-white">Generate UUID</h3>
             <p className="text-xs md:text-sm text-slate-400">Create a time-ordered unique identifier</p>
           </div>
         </div>
@@ -52,9 +52,9 @@ const uuid = uuid256.generateUuidV7();
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div>
-                <p className="text-xs md:text-sm text-slate-300 font-medium mb-0.5 md:mb-1">What is UUID v7?</p>
+                <p className="text-xs md:text-sm text-slate-300 font-medium mb-0.5 md:mb-1">What is UUID?</p>
                 <p className="text-[10px] md:text-xs text-slate-400">
-                  UUID v7 is a time-ordered UUID format that includes a timestamp, making it sortable and ideal for database keys.
+                  UUID (v7) is a time-ordered UUID format that includes a timestamp, making it sortable and ideal for database keys.
                   It's a 128-bit (16 bytes) identifier with built-in temporal ordering.
                 </p>
               </div>
@@ -73,7 +73,7 @@ const uuid = uuid256.generateUuidV7();
               <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              Generate UUID v7
+              Generate UUID
             </span>
           </button>
 

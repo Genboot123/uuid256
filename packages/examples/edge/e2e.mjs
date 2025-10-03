@@ -65,7 +65,7 @@ async function testEdge() {
     }
 
     console.log("\n✅ [Edge] Edge e2e test passed");
-    console.log("[Edge]  UUID v7:", json.uuid);
+    console.log("[Edge]  UUID:", json.uuid);
     console.log("[Edge]  Bridged:", json.bridged);
     console.log("[Edge]  Owner:", json.owner);
     console.log("[Edge]  Token URI:", json.tokenURI);

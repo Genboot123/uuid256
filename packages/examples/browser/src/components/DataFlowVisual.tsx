@@ -15,7 +15,7 @@ export function DataFlowVisual({ uuid, uint256, direction = "both" }: DataFlowVi
               <svg className="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
               </svg>
-              <span className="text-xs font-semibold text-blue-300">UUID v7</span>
+              <span className="text-xs font-semibold text-blue-300">UUID</span>
             </div>
           </div>
           <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/30 min-h-[80px] flex items-center justify-center">
@@ -84,7 +84,7 @@ export function DataFlowVisual({ uuid, uint256, direction = "both" }: DataFlowVi
           <div className="flex-1">
             <p className="text-xs md:text-sm text-purple-300 font-medium mb-1">Reversible Bridging</p>
             <p className="text-xs text-slate-400">
-              UUID256 provides lossless, bidirectional conversion between UUID v7 and uint256.
+              UUID256 provides lossless, bidirectional conversion between UUID and uint256.
               The upper 128 bits are always zero, preserving the original UUID data.
             </p>
           </div>

@@ -1,15 +1,13 @@
 import type { U256Hex, Uuid } from "./types.ts";
-import { uuidV7Generate, validateUuid } from "./deps.ts";
-import { RE_U256 } from "./const.ts";
+import { uuidV7Generate, validateUuidV7 } from "./deps.ts";
+import { RE_RFC4122, RE_U256 } from "./const.ts";
 
 /**
- * Type guard that checks whether the given string is a canonical UUID v7.
- *
- * A valid UUID v7 is 36 characters long (including dashes) and has the
- * version nibble set to "7".
+ * Type guard that checks whether the given string is a canonical RFC 4122 UUID
+ * (any version such as v1/v4/v7).
  *
  * @param s - Candidate string to validate.
- * @returns `true` if `s` is a canonical UUID v7, otherwise `false`.
+ * @returns `true` if `s` is a canonical UUID, otherwise `false`.
  *
  * @example
  * ```ts
@@ -19,15 +17,24 @@ import { RE_U256 } from "./const.ts";
  * ```
  */
 export function isUuid(s: string): s is Uuid {
-  if (!validateUuid(s)) return false;
-  return s.length === 36 && s[14] === "7";
+  // RFC 4122 canonical format: 8-4-4-4-12 with correct version and variant bits
+  // Versions accepted: 1-8 (includes v7). Variant: 8, 9, a, or b
+  return RE_RFC4122.test(s);
 }
+
 /**
- * Asserts the given string is a UUID v7 and returns it typed as {@link Uuid}.
+ * Type guard for UUID (v7) specifically.
+ */
+export function isUuidV7(s: string): s is Uuid {
+  return validateUuidV7(s);
+}
+
+/**
+ * Asserts the given string is a UUID and returns it typed as {@link Uuid}.
  *
  * @param s - String to validate and narrow.
  * @returns The same string, typed as {@link Uuid}, if validation succeeds.
- * @throws Error with code "INVALID_UUID_FORMAT" when `s` is not a UUID v7.
+ * @throws Error with code "INVALID_UUID_FORMAT" when `s` is not a UUID.
  *
  * @example
  * ```ts
@@ -40,7 +47,22 @@ export function asUuid(s: string): Uuid {
 }
 
 /**
- * Generates a standards-compliant UUID v7 string.
+ * Asserts the given string is a UUID (v7) and returns it typed as {@link Uuid}.
+ */
+export function asUuidV7(s: string): Uuid {
+  if (!validateUuidV7(s)) throw new Error("INVALID_UUID_FORMAT");
+  return s as Uuid;
+}
+
+/**
+ * Generates a random UUID.
+ */
+export function generateUuid() {
+  return crypto.randomUUID();
+}
+
+/**
+ * Generates a standards-compliant UUID (v7) string.
  *
  * The resulting string is suitable for lexicographic ordering by time.
  *

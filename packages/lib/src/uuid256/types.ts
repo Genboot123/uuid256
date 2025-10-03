@@ -1,12 +1,12 @@
 /**
- * Canonical UUID v7 string type.
+ * Canonical UUID string type.
  *
- * Represents a 36-character, hyphenated UUID string where the version nibble
- * is 7. Use {@link import("./lib.ts").isUuid | isUuid} or
+ * Represents a 36-character, hyphenated RFC 4122 UUID string. Use
+ * {@link import("./lib.ts").isUuid | isUuid} or
  * {@link import("./lib.ts").asUuid | asUuid} to validate or narrow values to
  * this type.
  */
-export type Uuid = string;
+export type Uuid = `${string}-${string}-${string}-${string}-${string}`;
 
 /**
  * Canonical 256-bit hexadecimal string with `0x` prefix.

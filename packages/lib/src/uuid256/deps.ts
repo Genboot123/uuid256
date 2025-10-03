@@ -1,2 +1,5 @@
-export { validate as validateUuid } from "jsr:@std/uuid@1";
-export { generate as uuidV7Generate } from "jsr:@std/uuid@1/unstable-v7";
+export { v4 } from "@std/uuid";
+export {
+  generate as uuidV7Generate,
+  validate as validateUuidV7,
+} from "@std/uuid/unstable-v7";

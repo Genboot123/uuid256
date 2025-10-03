@@ -47,7 +47,7 @@ export function useNFTMint(chain: Chain, account: string) {
           transport: http(),
         });
 
-        console.log(`[Browser]  UUID v7: ${uuid}`);
+        console.log(`[Browser]  UUID: ${uuid}`);
         const bridged = uuid256.uuidToU256(uuid);
         console.log(`[Browser]  Bridged: ${bridged}`);
         console.log(`[Browser]  Token ID: ${tokenId}`);

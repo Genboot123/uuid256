@@ -2,7 +2,7 @@
 
 <h1>uuid256 🔑</h1>
 
-<p>UUID v7 ↔ EVM <code>uint256</code> bridge. UUID is canonical; tokenId encodes it in lower 128 bits.</p>
+<p>UUID ↔ EVM <code>uint256</code> bridge. UUID is canonical; tokenId encodes it in lower 128 bits.</p>
 
 <p>
 
@@ -25,10 +25,13 @@
 
 </div>
 
-`uuid256` makes UUID v7 the canonical application identifier and bridges to EVM
+`uuid256` makes UUID the canonical application identifier and bridges to EVM
 `uint256` by packing the UUID into the lower 128 bits. The upper 128 bits MUST
 be zero. This preserves off‑chain compatibility (databases and APIs that use
 UUIDs) and stays interoperable with ERC‑721/1155 `tokenId`.
+
+Supports all [RFC 4122](https://www.rfc-editor.org/rfc/rfc4122) UUID versions
+for validation and bridging (v7 recommended for new IDs).
 
 - Contracts: `packages/contracts` (see `Uuid256.sol`)
 - Library (Deno/TypeScript): `packages/lib` (this package)
@@ -53,7 +56,7 @@ Common workarounds have trade‑offs:
 
 `uuid256` provides a deterministic, bidirectional, stateless bridge:
 
-- ✅ UUID v7 remains the canonical ID
+- ✅ UUID remains the recommended canonical ID
 - ✅ Deterministic encoding into lower 128 bits (upper 128 bits always zero)
 - ✅ Fully reversible
 - ✅ No mapping tables (pure algorithm)
@@ -109,7 +112,7 @@ uuid256.setCrypto(webcrypto);
 
 ### Numeric example
 
-- UUID v7 (string): `01234567-89ab-7cde-8f01-23456789abcdef`
+- UUID (string): `01234567-89ab-7cde-8f01-23456789abcdef`
 - Remove dashes, lowercase (32 hex): `0123456789ab7cde8f0123456789abcdef`
 - Bridge to `uint256`:
   - Lower 128 bits = `0x0123456789ab7cde8f0123456789abcdef`
@@ -131,7 +134,8 @@ uuid256.setCrypto(webcrypto);
 
 ### Status
 
-Defines a bidirectional bridge between UUID v7 and EVM `uint256`.
+Defines a bidirectional bridge between UUID (RFC 4122) and EVM `uint256` (v7
+recommended).
 
 ### Terminology
 
@@ -140,8 +144,8 @@ described in RFC 2119.
 
 ### Canonical identifier
 
-- The canonical identifier is UUID version 7 (UUIDv7). Applications MUST treat
-  the UUID string as the primary key.
+- The canonical identifier is UUID (v7 recommended). Applications MUST treat the
+  UUID string as the primary key.
 
 ### Bridged representation
 
@@ -159,31 +163,35 @@ described in RFC 2119.
 
 ### Validation
 
-- UUID inputs MUST match UUIDv7 syntax: `8-4-4-4-12` with `version=7` and RFC
-  4122 variant.
+- UUID inputs MUST be valid RFC 4122 UUIDs (any version) with the `8-4-4-4-12`
+  pattern and correct variant bits.
 - Implementations MAY downcase hex. On failure, they MUST throw
   `INVALID_UUID_FORMAT`.
 
 ### Errors
 
-| Code                  | When                                      |
-| --------------------- | ----------------------------------------- |
-| `INVALID_UUID_FORMAT` | Input string does not match UUIDv7 syntax |
-| `INVALID_U256_FORMAT` | Not `0x` + 64 hex                         |
-| `UPPER128_NOT_ZERO`   | Reverse bridge and upper 128 bits ≠ 0     |
+| Code                  | When                                    |
+| --------------------- | --------------------------------------- |
+| `INVALID_UUID_FORMAT` | Input string does not match UUID syntax |
+| `INVALID_U256_FORMAT` | Not `0x` + 64 hex                       |
+| `UPPER128_NOT_ZERO`   | Reverse bridge and upper 128 bits ≠ 0   |
 
 ### Security
 
-- UUID generation MUST use a CSPRNG for non‑timestamp bits.
+- UUID generation MUST use a CSPRNG for non‑timestamp bits where applicable.
 - Reverse bridging MUST validate upper 128 bits are zero.
 
 ---
 
 ## API
 
-- `generateUuidV7(): Uuid` — Create a UUID v7 string (lowercase). Uses CSPRNG.
-- `isUuid(s: string): s is Uuid`
+- `generateUuidV7(): Uuid` — Create a UUID string (v7, lowercase). Uses CSPRNG.
+- `generateUuidV5(namespace: string, data: string | Uint8Array): Promise<Uuid>`
+  — Deterministic name‑based UUID.
+- `isUuid(s: string): s is Uuid` — Accepts any RFC 4122 UUID version.
+- `isUuidV7(s: string): s is Uuid` — Validates UUID (v7) specifically.
 - `asUuid(s: string): Uuid` — throws `INVALID_UUID_FORMAT` on failure
+- `asUuidV7(s: string): Uuid` — throws `INVALID_UUID_FORMAT` on failure
 - `uuidToU256(uuid: string): U256Hex` — returns canonical `0x` + 64 lowercase
   hex (upper 128 bits are zero)
 - `u256ToUuid(id: string): Uuid` — throws `INVALID_U256_FORMAT` or

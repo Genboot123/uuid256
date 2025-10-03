@@ -41,9 +41,9 @@ const worker = {
         wallet
       );
 
-      // Generate UUIDv7 and bridge to uint256
+      // Generate UUID and bridge to uint256
       const uuid = uuid256.generateUuidV7();
-      console.log("[Edge]  UUID v7:", uuid);
+      console.log("[Edge]  UUID:", uuid);
       const bridged = uuid256.uuidToU256(uuid);
       console.log("[Edge]  Bridged:", bridged.substring(0, 20) + "...");
       const tokenId = BigInt(bridged);

@@ -30,7 +30,7 @@ async function main() {
   const publicClient = createPublicClient({ chain, transport: http() });
 
   const uuid = uuid256.generateUuidV7();
-  console.log("[Node]  UUID v7:", uuid);
+  console.log("[Node]  UUID:", uuid);
   const bridged = uuid256.uuidToU256(uuid);
   console.log("[Node]  Bridged:", bridged);
   const tokenId = BigInt(bridged);
