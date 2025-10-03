@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1>uuid256 (SDK, 日本語)</h1>
+<h1>uuid256</h1>
 
 <p>UUID v7 を正準 ID とし、EVM の <code>uint256</code> とは「下位 128bit = UUID、上位 128bit = 0」で相互変換</p>
 
@@ -19,7 +19,7 @@
 側（DB・API）の資産を保ちつつ、ERC‑721/1155 の `tokenId` と互換性を確保します。
 
 - コントラクト: `packages/contracts`（`Uuid256.sol`）
-- SDK (Deno/TypeScript): `packages/sdk`
+- ライブラリ (Deno/TypeScript): `packages/lib`
 - サンプル: `packages/examples`
 
 ### インストール

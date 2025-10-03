@@ -1,4 +1,4 @@
-const { uuid256 } = require("u256id");
+const { uuid256 } = require("uuid256");
 // Node CJS may not have globalThis.crypto: use node:crypto.webcrypto
 if (typeof globalThis.crypto === "undefined") {
   const { webcrypto } = require("node:crypto");

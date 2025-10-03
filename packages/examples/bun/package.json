@@ -6,7 +6,13 @@
     "test": "bun run quickstart.ts"
   },
   "dependencies": {
-    "u256id": "file:../../sdk/npm",
+    "uuid256": "file:../../sdk/npm",
     "viem": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }

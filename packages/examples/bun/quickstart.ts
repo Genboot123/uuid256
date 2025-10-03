@@ -1,4 +1,4 @@
-import { uuid256 } from "u256id";
+import { uuid256 } from "uuid256";
 import { createWalletClient, createPublicClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 

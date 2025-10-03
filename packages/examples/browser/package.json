@@ -6,7 +6,7 @@
     "serve": "node serve.mjs"
   },
   "dependencies": {
-    "u256id": "file:../../sdk/npm",
+    "uuid256": "file:../../sdk/npm",
     "viem": "^2.9.0"
   }
 }

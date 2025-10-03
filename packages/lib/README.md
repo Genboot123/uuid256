@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1>uuid256 (SDK)</h1>
+<h1>uuid256</h1>
 
 <p>UUID v7 ↔ EVM <code>uint256</code> bridge. UUID is canonical; tokenId encodes it in lower 128 bits.</p>
 
@@ -20,7 +20,7 @@ be zero. This keeps Web2 compatibility (UUIDs in databases, APIs) while
 remaining interoperable with ERC‑721/1155 `tokenId`.
 
 - Contracts: `packages/contracts` (see `Uuid256.sol`)
-- SDK (Deno/TypeScript): `packages/sdk` (this package)
+- Library (Deno/TypeScript): `packages/lib` (this package)
 - Examples: `packages/examples`
 
 ### Install
