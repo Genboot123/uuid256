@@ -12,11 +12,11 @@ contract U256IDTest is Test {
         c16 &= 0xffff;
         r156 &= (uint256(1) << 156) - 1;
         id = 0;
-        id |= (uint256(1) << 252);                 // version = 1
-        id |= uint256(t48) << 204;                  // T48
-        id |= uint256(n32) << 172;                  // N32
-        id |= uint256(c16) << 156;                  // C16
-        id |= r156;                                  // R156
+        id |= (uint256(1) << 252); // version = 1
+        id |= uint256(t48) << 204; // T48
+        id |= uint256(n32) << 172; // N32
+        id |= uint256(c16) << 156; // C16
+        id |= r156; // R156
     }
 
     function test_versionOf_v0_and_isSupported() public {

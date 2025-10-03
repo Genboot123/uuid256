@@ -11,7 +11,6 @@
     "@std/expect": "jsr:@std/expect@^1.0.17",
     "@std/testing": "jsr:@std/testing@^1.0.15"
   },
-  "nodeModulesDir": "auto",
   "exclude": [
     "coverage",
     "node_modules"

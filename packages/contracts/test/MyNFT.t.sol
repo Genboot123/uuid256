@@ -54,7 +54,9 @@ contract MyNFTTest is Test {
     function _hexLen(uint256 bytesLen) internal pure returns (string memory) {
         // returns string of '0's with length 64 for 32 bytes, used only to compare lengths
         bytes memory arr = new bytes(bytesLen * 2);
-        for (uint256 i = 0; i < arr.length; i++) arr[i] = bytes1("0");
+        for (uint256 i = 0; i < arr.length; i++) {
+            arr[i] = bytes1("0");
+        }
         return string(arr);
     }
 }
