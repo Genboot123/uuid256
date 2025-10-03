@@ -10,6 +10,7 @@ import {
 import { CONTRACT_ABI } from "../config/constants.ts";
 
 interface MintResult {
+  txHash: string;
   uuid: string;
   bridged: string;
   owner: string;
@@ -22,7 +23,7 @@ export function useNFTMint(chain: Chain, account: string) {
   const [error, setError] = useState<string>("");
 
   const mint = useCallback(
-    async (contractAddress: string) => {
+    async (contractAddress: string, uuid: string, tokenId: bigint) => {
       try {
         setBusy(true);
         setError("");
@@ -46,17 +47,24 @@ export function useNFTMint(chain: Chain, account: string) {
           transport: http(),
         });
 
-        const uuid = uuid256.generateUuidV7();
+        console.log(`[Browser]  UUID v7: ${uuid}`);
         const bridged = uuid256.uuidToU256(uuid);
-        const tokenId = BigInt(bridged);
+        console.log(`[Browser]  Bridged: ${bridged}`);
+        console.log(`[Browser]  Token ID: ${tokenId}`);
 
-        await walletClient.writeContract({
+        // Mint NFT and wait for transaction confirmation
+        const hash = await walletClient.writeContract({
           address: contractAddress as `0x${string}`,
           abi: CONTRACT_ABI,
           functionName: "mint",
           args: [account as `0x${string}`, tokenId],
         });
 
+        // Wait for transaction to be confirmed
+        const receipt = await publicClient.waitForTransactionReceipt({ hash });
+        console.log(`[Browser]  Transaction confirmed: ${receipt.status}`);
+
+        // After confirmation, read the NFT data
         const owner = await publicClient.readContract({
           address: contractAddress as `0x${string}`,
           abi: CONTRACT_ABI,
@@ -72,6 +80,7 @@ export function useNFTMint(chain: Chain, account: string) {
         });
 
         const mintResult: MintResult = {
+          txHash: hash,
           uuid,
           bridged,
           owner: owner as string,

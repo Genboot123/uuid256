@@ -4,7 +4,7 @@ import { dirname } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-console.log("Starting Wrangler dev server...");
+console.log("[Edge]  Starting Wrangler dev server...");
 
 const wrangler = spawn("npm", ["run", "dev"], {
   cwd: __dirname,
@@ -21,7 +21,7 @@ wrangler.stdout.on("data", (data) => {
 
   if (!serverReady && (output.includes("Ready on") || output.includes("localhost:8787"))) {
     serverReady = true;
-    console.log("\n✓ Wrangler ready, running test...\n");
+    console.log("\n✓ [Edge] Wrangler ready, running test...\n");
     setTimeout(testEdge, 2000);
   }
 });
@@ -34,7 +34,7 @@ wrangler.stderr.on("data", (data) => {
 async function testEdge() {
   try {
     const url = "http://localhost:8787/";
-    console.log("Testing:", url);
+    console.log("[Edge]  Testing:", url);
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -64,17 +64,17 @@ async function testEdge() {
       throw new Error("Unexpected edge response shape");
     }
 
-    console.log("\n✅ Edge e2e test passed");
-    console.log("Response:", {
-      uuid: json.uuid,
-      bridged: json.bridged.substring(0, 20) + "...",
-      owner: json.owner,
-      txHash: json.txHash
-    });
+    console.log("\n✅ [Edge] Edge e2e test passed");
+    console.log("[Edge]  UUID v7:", json.uuid);
+    console.log("[Edge]  Bridged:", json.bridged);
+    console.log("[Edge]  Owner:", json.owner);
+    console.log("[Edge]  Token URI:", json.tokenURI);
+    console.log("[Edge]  Tx Hash:", json.txHash);
+
 
     process.exit(0);
   } catch (error) {
-    console.error("\n❌ Edge e2e test failed:", error.message);
+    console.error("\n❌ [Edge] Edge e2e test failed:", error.message);
     process.exit(1);
   } finally {
     wrangler.kill();
@@ -84,7 +84,7 @@ async function testEdge() {
 // Timeout after 60 seconds
 setTimeout(() => {
   if (!serverReady) {
-    console.error("\n❌ Wrangler failed to start within 60 seconds");
+    console.error("\n❌ [Edge] Wrangler failed to start within 60 seconds");
     wrangler.kill();
     process.exit(1);
   }
@@ -92,7 +92,7 @@ setTimeout(() => {
 
 // Handle process termination
 process.on("SIGINT", () => {
-  console.log("\nInterrupted, cleaning up...");
+  console.log("\n[Edge]  Interrupted, cleaning up...");
   wrangler.kill();
   process.exit(130);
 });

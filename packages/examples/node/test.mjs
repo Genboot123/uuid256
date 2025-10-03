@@ -21,7 +21,7 @@ async function main() {
   }
 
   const __dirname = dirname(fileURLToPath(import.meta.url));
-  const abiPath = join(__dirname, "../../../contracts/out/Uuid256TestNFT.sol/Uuid256TestNFT.json");
+  const abiPath = join(__dirname, "../../contracts/out/Uuid256TestNFT.sol/Uuid256TestNFT.json");
   const artifact = JSON.parse(await readFile(abiPath, "utf-8"));
   const abi = artifact.abi;
 
@@ -30,27 +30,48 @@ async function main() {
   const publicClient = createPublicClient({ chain, transport: http() });
 
   const uuid = uuid256.generateUuidV7();
+  console.log("[Node]  UUID v7:", uuid);
   const bridged = uuid256.uuidToU256(uuid);
+  console.log("[Node]  Bridged:", bridged);
   const tokenId = BigInt(bridged);
+  console.log("[Node]  Token ID:", tokenId);
 
   // mint bridged tokenId to self
-  await wallet.writeContract({
+  console.log("[Node]  Minting tokenId to self...");
+  const hash = await wallet.writeContract({
     address: CONTRACT_ADDRESS,
     abi,
     functionName: "mint",
     args: [account.address, tokenId],
   });
+  console.log("[Node]  Mint tx:", hash);
 
+  console.log("[Node]  Waiting for transaction confirmation...");
+  const receipt = await publicClient.waitForTransactionReceipt({
+    hash,
+    confirmations: 2
+  });
+  console.log("[Node]  Transaction confirmed!");
+  console.log("[Node]  Receipt status:", receipt.status);
+
+  if (receipt.status !== 'success') {
+    throw new Error(`[Node]  Transaction failed with status: ${receipt.status}`);
+  }
+
+  console.log(`[Node]  Reading ownerOf(${tokenId})`);
   const owner = await publicClient.readContract({
     address: CONTRACT_ADDRESS,
     abi,
     functionName: "ownerOf",
     args: [tokenId],
   });
+  console.log("[Node]  Owner:", owner);
+
   if (owner.toLowerCase() !== account.address.toLowerCase()) {
-    throw new Error(`ownerOf mismatch: ${owner} !== ${account.address}`);
+    throw new Error(`[Node]  ownerOf mismatch: ${owner} !== ${account.address}`);
   }
 
+  console.log(`[Node]  Reading tokenURI(${tokenId})`);
   const uri = await publicClient.readContract({
     address: CONTRACT_ADDRESS,
     abi,
@@ -58,11 +79,12 @@ async function main() {
     args: [tokenId],
   });
   if (!(typeof uri === "string" && uri.startsWith("ipfs://") && uri.includes(bridged))) {
-    console.warn("tokenURI:", uri);
+    console.warn("[Node]  tokenURI:", uri);
     throw new Error("Unexpected tokenURI format");
   }
+  console.log("[Node]  Token URI:", uri);
 
-  console.log("node e2e ok", { uuid, bridged, back: uuid256.u256ToUuid(bridged) });
+  console.log("[Node] ✅ Node.js e2e test passed");
 }
 
 main().then(() => process.exit(0)).catch((err) => {

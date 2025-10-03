@@ -7,7 +7,7 @@ async function main() {
   const PRIVATE_KEY = process.env.PRIVATE_KEY as `0x${string}`;
   const CONTRACT_ADDRESS = "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
   if (!PRIVATE_KEY) {
-    throw new Error("Missing PRIVATE_KEY env var. Set your private key with Base Sepolia funds.");
+    throw new Error("[Bun]  Missing PRIVATE_KEY env var. Set your private key with Base Sepolia funds.");
   }
 
   const chain = baseSepolia;
@@ -24,14 +24,36 @@ async function main() {
   ] as const;
 
   const uuid = uuid256.generateUuidV7();
+  console.log("[Bun]  UUID v7:", uuid);
   const bridged = uuid256.uuidToU256(uuid);
+  console.log("[Bun]  Bridged:", bridged);
   const tokenId = BigInt(bridged);
+  console.log("[Bun]  Token ID:", tokenId);
 
-  await wallet.writeContract({ address: CONTRACT_ADDRESS, abi, functionName: "mint", args: [account.address, tokenId] });
+  console.log("[Bun]  Minting tokenId to self...");
+  const hash = await wallet.writeContract({ address: CONTRACT_ADDRESS, abi, functionName: "mint", args: [account.address, tokenId] });
+  console.log("[Bun]  Mint tx:", hash);
+
+  console.log("[Bun]  Waiting for transaction confirmation...");
+  const receipt = await publicClient.waitForTransactionReceipt({
+    hash,
+    confirmations: 2
+  });
+  console.log("[Bun]  Transaction confirmed!");
+  console.log("[Bun]  Receipt status:", receipt.status);
+
+  if (receipt.status !== 'success') {
+    throw new Error(`[Bun]  Transaction failed with status: ${receipt.status}`);
+  }
+
+  console.log(`[Bun]  Reading ownerOf(${tokenId})`);
   const owner = await publicClient.readContract({ address: CONTRACT_ADDRESS, abi, functionName: "ownerOf", args: [tokenId] });
   if (owner.toLowerCase() !== account.address.toLowerCase()) throw new Error("owner mismatch");
+  console.log(`[Bun]  Reading tokenURI ${tokenId}`);
   const uri = await publicClient.readContract({ address: CONTRACT_ADDRESS, abi, functionName: "tokenURI", args: [tokenId] });
-  console.log("bun e2e ok", { uuid, bridged, owner, uri });
+  console.log("[Bun]  Token URI:", uri);
+
+  console.log("[Bun] ✅ Bun e2e test passed");
 }
 
 main().then(() => process.exit(0)).catch((err) => { console.error(err); process.exit(1); });

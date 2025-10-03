@@ -6,8 +6,8 @@ if (typeof globalThis.crypto === "undefined") {
 }
 
 const uuid = uuid256.generateUuidV7();
+console.log("[Node]  UUID v7:", uuid);
 const bridged = uuid256.uuidToU256(uuid);
-const back = uuid256.u256ToUuid(bridged);
-console.log("uuid v7:", uuid);
-console.log("bridged u256:", bridged);
-console.log("roundtrip uuid:", back);
+console.log("[Node]  Bridged:", bridged.substring(0, 20) + "...");
+const tokenId = BigInt(bridged);
+console.log("[Node]  Token ID:", tokenId);

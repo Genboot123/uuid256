@@ -15,7 +15,7 @@ install: install-browser install-node install-bun install-edge
 
 install-browser:
 	@echo "📦 Installing browser dependencies..."
-	@cd browser && npm install
+	@cd browser && pnpm install
 
 install-node:
 	@echo "📦 Installing node dependencies..."

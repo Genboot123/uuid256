@@ -86,8 +86,8 @@ bun run test     # Run tests
 ```bash
 cd edge
 npm install
-cp .dev.vars.example .dev.vars
-# Edit .dev.vars and add your PRIVATE_KEY
+cp .env.example .env
+# Edit .env and add your PRIVATE_KEY
 npm run dev      # Start Wrangler dev server
 npm run test     # Run tests
 ```

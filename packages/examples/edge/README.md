@@ -9,18 +9,18 @@ This example demonstrates using uuid256 with ethers.js in Cloudflare Workers.
 npm install
 ```
 
-2. Create `.dev.vars` file:
+2. Create `.env` file:
 ```bash
-cp .dev.vars.example .dev.vars
+cp .env.example .env
 ```
 
-3. Edit `.dev.vars` and add your private key:
+3. Edit `.env` and add your private key:
 ```bash
-# .dev.vars
+# .env
 PRIVATE_KEY=0x1234567890abcdef...
 ```
 
-**Important:** Never commit `.dev.vars` to git. It's already in `.gitignore`.
+**Important:** Never commit `.env` to git. It's already in `.gitignore`.
 
 ## Development
 
@@ -80,4 +80,4 @@ The response includes:
 - Uses ethers.js v6 (compatible with Cloudflare Workers)
 - Connects to Base Sepolia testnet
 - Requires a private key with testnet ETH
-- Environment variables are loaded from `.dev.vars` for local development
+- Environment variables are loaded from `.env` for local development

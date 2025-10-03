@@ -2,9 +2,6 @@
   "deno.enable": true,
   "deno.lint": true,
 
-  "eslint.enable": false,
-  "biome.enable": false,
-
   "deno.disablePaths": [
     "packages/contracts",
     "packages/examples",
