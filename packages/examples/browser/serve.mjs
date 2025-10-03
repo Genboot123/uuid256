@@ -4,13 +4,12 @@ import { createReadStream } from "node:fs";
 import { join, dirname } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const root = join(__dirname, "..");
 
 const server = http.createServer((req, res) => {
   const url = req.url || "/";
   let filePath;
   if (url === "/") filePath = join(__dirname, "index.html");
-  else if (url.startsWith("/node_modules/")) filePath = join(root, url);
+  else if (url.startsWith("/node_modules/")) filePath = join(__dirname, url);
   else filePath = join(__dirname, url);
 
   const stream = createReadStream(filePath);
