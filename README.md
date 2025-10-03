@@ -1,5 +1,30 @@
-# u256id
-U256ID is a 256-bit identifier (uint256) with strict, interoperable encoding and validation rules.
+<div align="center">
+
+<h1>U256ID</h1>
+
+<p>U256ID v2 (canonical: 0x + 64 hex; HR: Base58; versions: v0, v1)</p>
+
+<p>
+      <a href="https://jsr.io/@posaune0423/u256id">
+        <img src="https://jsr.io/badges/@posaune0423/u256id" alt="" />
+      </a>
+      <a href="https://jsr.io/@posaune0423/u256id">
+        <img src="https://jsr.io/badges/@posaune0423/u256id/score" alt="" />
+      </a>
+      <a href="https://github.com/posaune0423/u256id/actions/workflows/test-sdk.yml">
+        <img alt="CI" src="https://github.com/posaune0423/u256id/actions/workflows/test-sdk.yml/badge.svg" />
+      </a>
+      <a href="https://www.npmjs.com/package/u256id">
+        <img src="https://img.shields.io/npm/v/u256id.svg" alt="npm package" />
+      </a>
+      <a href="https://npmjs.org/package/u256id">
+        <img alt="downloads" src="https://img.shields.io/npm/d18m/u256id" />
+      </a>
+  </p>
+</div>
+
+U256ID is a 256-bit identifier (uint256) with strict, interoperable encoding and
+validation rules.
 
 - Specification: see the normative Usage Specification below (MUST/SHOULD/MAY).
 - Repos:
@@ -14,11 +39,13 @@ Quick start:
 
 ## U256ID — Usage Specification (Normative)
 
-本書は U256ID の厳格な使用仕様を定義する。実装は本仕様に従うことで相互運用性を確保できる。
+本書は U256ID
+の厳格な使用仕様を定義する。実装は本仕様に従うことで相互運用性を確保できる。
 
 ### 1. 用語と規範語
 
-本書では [RFC 2119] に準拠し、MUST / MUST NOT / SHOULD / SHOULD NOT / MAY を規範語として使用する。
+本書では [RFC 2119] に準拠し、MUST / MUST NOT / SHOULD / SHOULD NOT / MAY
+を規範語として使用する。
 
 - **U256ID**: 256bit の符号なし整数（uint256）を識別子とする規格。
 - **Canonical ID**: uint256 を `0x` + 64 桁小文字 hex で表現したテキスト形式。
@@ -34,27 +61,27 @@ Quick start:
 
 #### 2.1 ビット配置（共通）
 
-| ビット位置 (MSB→LSB) | 長さ | 名称     | 説明                                  |
-| --- | --- | --- | --- |
-| 255..252              | 4    | version | 上位 4bit。`0x0 = v0`, `0x1 = v1`。 |
-| 251..0                | 252  | payload | バージョン固有フィールド。           |
+| ビット位置 (MSB→LSB) | 長さ | 名称    | 説明                                |
+| -------------------- | ---- | ------- | ----------------------------------- |
+| 255..252             | 4    | version | 上位 4bit。`0x0 = v0`, `0x1 = v1`。 |
+| 251..0               | 252  | payload | バージョン固有フィールド。          |
 
 #### 2.2 v0: Random
 
-| フィールド | 位置     | 長さ | 値/意味                              |
-| --- | --- | --- | --- |
-| version  | 255..252 | 4    | `0000b`                            |
-| R        | 251..0   | 252  | CSPRNG による 252bit の乱数         |
+| フィールド | 位置     | 長さ | 値/意味                     |
+| ---------- | -------- | ---- | --------------------------- |
+| version    | 255..252 | 4    | `0000b`                     |
+| R          | 251..0   | 252  | CSPRNG による 252bit の乱数 |
 
 #### 2.3 v1: Time-sortable
 
-| フィールド | 位置     | 長さ | 値/意味                                                                 |
-| --- | --- | --- | --- |
-| version  | 255..252 | 4    | `0001b`                                                                 |
-| T        | 251..204 | 48   | Unix 時刻 (ms)、範囲: `[0, 2^48-1]`                                     |
-| N        | 203..172 | 32   | NodeID。プロセス/ノードごとに固定（起動時に乱数初期化、または構成で指定） |
-| C        | 171..156 | 16   | 単調カウンタ（同一 ms 内で `+1`、`0xffff` で wrap してよい）            |
-| R        | 155..0   | 156  | 追加乱数（CSPRNG）。分散生成時の衝突確率低減                            |
+| フィールド | 位置     | 長さ | 値/意味                                                                   |
+| ---------- | -------- | ---- | ------------------------------------------------------------------------- |
+| version    | 255..252 | 4    | `0001b`                                                                   |
+| T          | 251..204 | 48   | Unix 時刻 (ms)、範囲: `[0, 2^48-1]`                                       |
+| N          | 203..172 | 32   | NodeID。プロセス/ノードごとに固定（起動時に乱数初期化、または構成で指定） |
+| C          | 171..156 | 16   | 単調カウンタ（同一 ms 内で `+1`、`0xffff` で wrap してよい）              |
+| R          | 155..0   | 156  | 追加乱数（CSPRNG）。分散生成時の衝突確率低減                              |
 
 ### 3. 表現
 
@@ -69,7 +96,8 @@ Quick start:
 
 - **エンディアン**: big-endian（文字列先頭が MSB）。
 - **規範**:
-  - すべての保存・比較・署名・API I/O の基準は Canonical でなければならない（MUST）。
+  - すべての保存・比較・署名・API I/O の基準は Canonical
+    でなければならない（MUST）。
   - 実装は 大小文字混在を拒否し、小文字に正規化すること（MUST）。
 
 #### 3.2 HR(Base58)
@@ -102,7 +130,8 @@ Quick start:
 
 #### 4.2 v0
 
-- 先頭 4bit を `0000b` に設定し、残り 252bit を CSPRNG で埋めなければならない（MUST）。
+- 先頭 4bit を `0000b` に設定し、残り 252bit を CSPRNG
+  で埋めなければならない（MUST）。
 
 #### 4.3 v1
 
@@ -111,34 +140,37 @@ Quick start:
   2. `N =` Node 固有 32bit 値（起動時または構成で固定）。
   3. `C =` 同一 ms 内で単調増加（wrap 可）。
   4. `R =` CSPRNG の 156bit。
-- `T` は単調非減少であるべき（SHOULD）。システム時計が後退した場合でも `C` で順序を補うことが望ましい（SHOULD）。
+- `T` は単調非減少であるべき（SHOULD）。システム時計が後退した場合でも `C`
+  で順序を補うことが望ましい（SHOULD）。
 
 ### 5. 検証（Validation）要件
 
 #### 5.1 Canonical 検証
 
-| ステップ | 条件                                   | 動作                                      |
-| --- | --- | --- |
-| 1      | 文字列が `^0x[0-9a-f]{64}$` に一致するか | 不一致なら `INVALID_FORMAT` でエラー       |
-| 2      | 数値に解釈可（uint256）か                | 不可なら `INVALID_VALUE` でエラー          |
-| 3      | `version = (id >> 252) & 0xF`            | 実装が未対応の version の場合 `UNSUPPORTED_VERSION` |
+| ステップ | 条件                                     | 動作                                                |
+| -------- | ---------------------------------------- | --------------------------------------------------- |
+| 1        | 文字列が `^0x[0-9a-f]{64}$` に一致するか | 不一致なら `INVALID_FORMAT` でエラー                |
+| 2        | 数値に解釈可（uint256）か                | 不可なら `INVALID_VALUE` でエラー                   |
+| 3        | `version = (id >> 252) & 0xF`            | 実装が未対応の version の場合 `UNSUPPORTED_VERSION` |
 
 #### 5.2 HR(Base58) 検証
 
-| ステップ | 条件                              | 動作                                      |
-| --- | --- | --- |
-| 1      | 先頭 `u2:` は あってもなくても可     | 有れば除去                                |
-| 2      | Base58 アルファベットのみか          | それ以外があれば `INVALID_BASE58`         |
-| 3      | Base58 → 整数復元                    | 復元失敗で `INVALID_BASE58`               |
-| 4      | 整数を 256bit にパディング           | `0x+64hex` に変換                         |
-| 5      | 5.1 の Canonical 検証を実施          | エラーを伝播                              |
+| ステップ | 条件                             | 動作                              |
+| -------- | -------------------------------- | --------------------------------- |
+| 1        | 先頭 `u2:` は あってもなくても可 | 有れば除去                        |
+| 2        | Base58 アルファベットのみか      | それ以外があれば `INVALID_BASE58` |
+| 3        | Base58 → 整数復元                | 復元失敗で `INVALID_BASE58`       |
+| 4        | 整数を 256bit にパディング       | `0x+64hex` に変換                 |
+| 5        | 5.1 の Canonical 検証を実施      | エラーを伝播                      |
 
 実装は HR 入力 → Canonical 正規化 の順で保存すること（MUST）。
 
 ### 6. 相互運用（UUID ブリッジ）
 
-- `uuidToU256`: UUID(16B) を 下位 128bit に格納し、上位 128bit = 0 を満たす Canonical を生成（MUST）。
-- `u256ToUuid`: 上位 128bit = 0 を満たす場合のみ UUID 文字列に戻してよい（MAY）。
+- `uuidToU256`: UUID(16B) を 下位 128bit に格納し、上位 128bit = 0 を満たす
+  Canonical を生成（MUST）。
+- `u256ToUuid`: 上位 128bit = 0 を満たす場合のみ UUID
+  文字列に戻してよい（MAY）。
 - **規範**:
   - ブリッジ使用時、受理側は 上位 128bit = 0 を MUST で検証すること。
   - UUID v7 等の時系列性は U256ID v1 の `T` とは互換ではない（情報が別領域）。
@@ -147,30 +179,30 @@ Quick start:
 
 #### 7.1 API
 
-| 項目 | 規範 |
-| --- | --- |
-| 入力 | Canonical または HR を受理してよい（MAY）。受理後は Canonical に正規化（MUST）。Short は拒否（MUST NOT）。 |
-| 出力 | Canonical を返す（MUST）。UI 向けエンドポイントは HR を併記してもよい（MAY）。 |
-| エラー | 本仕様のエラーコード（8章）で返すことが望ましい（SHOULD）。 |
+| 項目   | 規範                                                                                                       |
+| ------ | ---------------------------------------------------------------------------------------------------------- |
+| 入力   | Canonical または HR を受理してよい（MAY）。受理後は Canonical に正規化（MUST）。Short は拒否（MUST NOT）。 |
+| 出力   | Canonical を返す（MUST）。UI 向けエンドポイントは HR を併記してもよい（MAY）。                             |
+| エラー | 本仕様のエラーコード（8章）で返すことが望ましい（SHOULD）。                                                |
 
 #### 7.2 データベース
 
-| 項目 | 推奨 |
-| --- | --- |
-| 型 | 固定長 `CHAR(66)`（`0x+64hex`）。`CHECK` 制約で正規表現検証。 |
-| 主キー | Canonical を PK とする。B-Tree で v1 の時系列局所性が有利。 |
+| 項目       | 推奨                                                            |
+| ---------- | --------------------------------------------------------------- |
+| 型         | 固定長 `CHAR(66)`（`0x+64hex`）。`CHECK` 制約で正規表現検証。   |
+| 主キー     | Canonical を PK とする。B-Tree で v1 の時系列局所性が有利。     |
 | セカンダリ | 必要に応じ `ts_ms`（v1 の `T`）等の導出列を作成しインデックス。 |
 
 ### 8. エラーコード（推奨）
 
-| コード | 意味 | 条件 |
-| --- | --- | --- |
-| `INVALID_FORMAT` | 形式エラー | 正規表現不一致（Canonical）/ 長さ不正 |
-| `INVALID_VALUE` | 値エラー | uint256 として解釈不可 |
-| `UNSUPPORTED_VERSION` | 未対応バージョン | `version` が実装外 |
-| `INVALID_BASE58` | Base58 不正 | HR の文字集合/復号失敗 |
-| `DISALLOWED_SHORT` | Short 入力 | `u2s:` 入力を拒否 |
-| `UPPER128_NOT_ZERO` | 上位ゼロ要件違反 | UUID ブリッジ逆変換時 |
+| コード                | 意味             | 条件                                  |
+| --------------------- | ---------------- | ------------------------------------- |
+| `INVALID_FORMAT`      | 形式エラー       | 正規表現不一致（Canonical）/ 長さ不正 |
+| `INVALID_VALUE`       | 値エラー         | uint256 として解釈不可                |
+| `UNSUPPORTED_VERSION` | 未対応バージョン | `version` が実装外                    |
+| `INVALID_BASE58`      | Base58 不正      | HR の文字集合/復号失敗                |
+| `DISALLOWED_SHORT`    | Short 入力       | `u2s:` 入力を拒否                     |
+| `UPPER128_NOT_ZERO`   | 上位ゼロ要件違反 | UUID ブリッジ逆変換時                 |
 
 ### 9. 例（相互確認用）
 
@@ -214,10 +246,14 @@ C     = (id >> 156) & 0xffff
 
 ### 10. セキュリティ考慮事項
 
-- **CSPRNG の強度**: 実装はプラットフォーム標準の CSPRNG を使用すること（MUST）。
-- **衝突**: v0/v1 ともに現実的に無視可能だが、ユニーク制約と 重複時リトライを実装すること（SHOULD）。
-- **推測耐性**: v1 は `T` を含むため生成時刻が漏洩する。秘匿要件がある場合は v0 を選択すること（SHOULD）。
-- **入力検証**: HR/Canonical いずれも厳格に検証し、不正文字・サイズ・未対応バージョンを拒否すること（MUST）。
+- **CSPRNG の強度**: 実装はプラットフォーム標準の CSPRNG
+  を使用すること（MUST）。
+- **衝突**: v0/v1 ともに現実的に無視可能だが、ユニーク制約と
+  重複時リトライを実装すること（SHOULD）。
+- **推測耐性**: v1 は `T` を含むため生成時刻が漏洩する。秘匿要件がある場合は v0
+  を選択すること（SHOULD）。
+- **入力検証**: HR/Canonical
+  いずれも厳格に検証し、不正文字・サイズ・未対応バージョンを拒否すること（MUST）。
 - **Short の誤用**: Short を比較・入力に用いることは 禁止（MUST NOT）。
 
 ### 11. アルゴリズム（参考実装レベル）
@@ -249,9 +285,12 @@ function fromBase58(hr):
 
 ### 12. 相互運用上の注意
 
-- **ERC-721/1155**: `tokenId` は uint256 であるため、U256ID の Canonical をそのまま利用できる。
-- **OpenZeppelin**: `Strings.toHexString(tokenId, 32)` で `0x+64hex` が得られる。
-- **UUID 系システム**: `uuidToU256` により下位 128bit へ詰めることでブリッジ可能（上位 128bit = 0 を常に検証）。
+- **ERC-721/1155**: `tokenId` は uint256 であるため、U256ID の Canonical
+  をそのまま利用できる。
+- **OpenZeppelin**: `Strings.toHexString(tokenId, 32)` で `0x+64hex`
+  が得られる。
+- **UUID 系システム**: `uuidToU256` により下位 128bit
+  へ詰めることでブリッジ可能（上位 128bit = 0 を常に検証）。
 
 ### 13. 適合性（Conformance）
 
