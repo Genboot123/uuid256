@@ -1,0 +1,34 @@
+name: test-sdk
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ci:
+    name: ci for sdk
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/sdk
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
+
+      - name: Show Deno version
+        run: |
+          deno --version
+
+      - name: Run Deno fmt
+        run: |
+          deno fmt --check
+        id: fmt
+
+      - name: Run Deno tests
+        run: |
+          deno test -vvv
+        id: test

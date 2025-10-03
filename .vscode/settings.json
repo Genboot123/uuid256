@@ -1,0 +1,23 @@
+{
+  "deno.enable": true,
+  "deno.lint": true,
+
+  "eslint.enable": false,
+  "biome.enable": false,
+
+  "deno.disablePaths": [
+    "packages/contracts",
+  ],
+
+  "editor.defaultFormatter": "denoland.vscode-deno",
+
+  "[typescript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  }
+}
