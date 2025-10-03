@@ -5,8 +5,8 @@
 <p>UUID v7 ↔ EVM <code>uint256</code> bridge. UUID is canonical; tokenId encodes it in lower 128 bits.</p>
 
 <p>
-  
-  <a href="https://jsr.io/@posaune0423/uuid256">
+
+<a href="https://jsr.io/@posaune0423/uuid256">
         <img src="https://jsr.io/badges/@posaune0423/uuid256" alt="" />
       </a>
       <a href="https://jsr.io/@posaune0423/uuid256">
