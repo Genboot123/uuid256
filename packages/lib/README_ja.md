@@ -35,21 +35,25 @@
 ### インストール
 
 npm
+
 ```bash
 npm i uuid256
 ```
 
 pnpm
+
 ```bash
 pnpm add uuid256
 ```
 
 Bun
+
 ```bash
 bun add uuid256
 ```
 
 Deno
+
 ```bash
 deno add jsr:posaune0423/uuid256
 ```

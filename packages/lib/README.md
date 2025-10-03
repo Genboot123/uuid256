@@ -37,25 +37,28 @@ remaining interoperable with ERC‑721/1155 `tokenId`.
 ### Install
 
 npm
+
 ```bash
 npm i uuid256
 ```
 
 pnpm
+
 ```bash
 pnpm add uuid256
 ```
 
 Bun
+
 ```bash
 bun add uuid256
-
 ```
+
 Deno
+
 ```bash
 deno add jsr:posaune0423/uuid256
 ```
-
 
 ### Quick start
 
