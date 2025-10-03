@@ -18,7 +18,7 @@ contract MyNFT is ERC721 {
     /// @notice Off-chain generated U256ID (uint256) を受け入れてミント
     function mint(address to, uint256 tokenId) external {
         require(tokenId.isSupported(), "U256ID: unsupported version"); // v0 or v1
-        _safeMint(to, tokenId);
+        _mint(to, tokenId);
     }
 
     function _baseURI() internal view override returns (string memory) {
