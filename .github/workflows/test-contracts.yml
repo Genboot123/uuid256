@@ -2,13 +2,15 @@ name: test-contracts
 
 on:
   push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 env:
   FOUNDRY_PROFILE: ci
-
-
 
 jobs:
   ci:
