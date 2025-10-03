@@ -15,13 +15,5 @@
     "coverage",
     "node_modules"
   ],
-  "exports": "./src/mod.ts",
-  "publish": {
-    "exclude": [
-      "tests",
-      "scripts",
-      "node_modules",
-      "npm"
-    ]
-  }
+  "exports": "./src/mod.ts"
 }
