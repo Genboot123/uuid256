@@ -5,7 +5,6 @@ import { privateKeyToAccount } from "viem/accounts";
 import { fileURLToPath } from "node:url";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { process } from "node:process";
 
 async function main() {
   if (typeof globalThis.crypto === "undefined") {

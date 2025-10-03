@@ -1,4 +1,4 @@
-.PHONY: help install clean dev build test e2e install-browser install-node install-bun install-edge
+.PHONY: help install clean dev build test install-browser install-node install-bun install-edge
 
 # Default target
 help:
@@ -8,7 +8,6 @@ help:
 	@echo "  make dev        - Run dev servers for all examples in parallel"
 	@echo "  make build      - Build all examples"
 	@echo "  make test       - Run tests for all examples"
-	@echo "  make e2e        - Run e2e tests for all examples"
 
 # Install all dependencies
 install: install-browser install-node install-bun install-edge
@@ -54,8 +53,3 @@ build:
 test:
 	@echo "🧪 Running tests..."
 	@./scripts/test-parallel.sh
-
-# E2E all
-e2e:
-	@echo "🧪 Running e2e tests..."
-	@./scripts/e2e-parallel.sh

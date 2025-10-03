@@ -1,12 +1,10 @@
 {
-  "name": "u256id-examples-node",
+  "name": "uuid256-examples-node",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "echo 'No build step required for node runtime'",
-    "test": "node test.mjs && node require.cjs",
-    "e2e": "node test.mjs",
+    "test": "node --env-file=.env test.mjs && node require.cjs",
     "clean": "rm -rf node_modules"
   },
   "dependencies": {

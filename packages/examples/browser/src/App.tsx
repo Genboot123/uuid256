@@ -1,10 +1,10 @@
 import { useState, useMemo } from "react";
-import { DEFAULT_CHAIN, CONTRACT_ADDRESS } from "./config/constants.ts";
-import { useWallet } from "./hooks/useWallet.ts";
-import { useNFTMint } from "./hooks/useNFTMint.ts";
-import { WalletInfo } from "./components/WalletInfo.tsx";
-import { MintSection } from "./components/MintSection.tsx";
-import { OutputDisplay } from "./components/OutputDisplay.tsx";
+import { DEFAULT_CHAIN, CONTRACT_ADDRESS } from "./config/constants";
+import { useWallet } from "./hooks/useWallet";
+import { useNFTMint } from "./hooks/useNFTMint";
+import { WalletInfo } from "./components/WalletInfo";
+import { MintSection } from "./components/MintSection";
+import { OutputDisplay } from "./components/OutputDisplay";
 
 export function App() {
   const chain = DEFAULT_CHAIN;

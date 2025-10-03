@@ -1,42 +1,76 @@
 import { uuid256 } from "uuid256";
-import { createWalletClient, createPublicClient, http } from "viem";
-import { baseSepolia } from "viem/chains";
-import { privateKeyToAccount } from "viem/accounts";
+import { ethers } from "ethers";
+
+const CONTRACT_ADDRESS = "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
+
+const CONTRACT_ABI = [
+  "function mint(address to, uint256 tokenId)",
+  "function ownerOf(uint256 tokenId) view returns (address)",
+  "function tokenURI(uint256 tokenId) view returns (string)"
+];
 
 const worker = {
-  async fetch(req) {
-    const url = new URL(req.url);
-    const CONTRACT_ADDRESS = "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
-    const PRIVATE_KEY = url.searchParams.get("pk");
-    if (!PRIVATE_KEY) {
-      return new Response(JSON.stringify({ error: "missing pk param" }), { status: 400 });
+  async fetch(req, env) {
+    try {
+      const PRIVATE_KEY = env.PRIVATE_KEY;
+      const RPC_URL = env.RPC_URL || "https://sepolia.base.org";
+
+      if (!PRIVATE_KEY) {
+        return new Response(
+          JSON.stringify({
+            error: "PRIVATE_KEY not configured in environment",
+            hint: "Set PRIVATE_KEY in .dev.vars file for local development"
+          }, null, 2),
+          {
+            status: 500,
+            headers: { "content-type": "application/json" }
+          }
+        );
+      }
+
+      // Connect to Base Sepolia
+      const provider = new ethers.JsonRpcProvider(RPC_URL);
+      const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, wallet);
+
+      // Generate UUIDv7 and bridge to uint256
+      const uuid = uuid256.generateUuidV7();
+      const bridged = uuid256.uuidToU256(uuid);
+      const tokenId = BigInt(bridged);
+
+      // Mint NFT
+      const tx = await contract.mint(wallet.address, tokenId);
+      await tx.wait();
+
+      // Read back the data
+      const owner = await contract.ownerOf(tokenId);
+      const uri = await contract.tokenURI(tokenId);
+
+      const result = {
+        uuid,
+        bridged,
+        tokenId: tokenId.toString(),
+        owner,
+        tokenURI: uri,
+        txHash: tx.hash,
+        timestamp: new Date().toISOString(),
+      };
+
+      return new Response(JSON.stringify(result, null, 2), {
+        headers: { "content-type": "application/json" },
+      });
+    } catch (error) {
+      return new Response(
+        JSON.stringify({
+          error: error.message,
+          stack: error.stack
+        }, null, 2),
+        {
+          status: 500,
+          headers: { "content-type": "application/json" }
+        }
+      );
     }
-
-    // Use Base Sepolia only
-    const chain = baseSepolia;
-
-    // minimal ABI for mint/ownerOf/tokenURI
-    const abi = [
-      { "type": "function", "name": "mint", "stateMutability": "nonpayable", "inputs": [
-        { "name": "to", "type": "address" }, { "name": "tokenId", "type": "uint256" } ], "outputs": [] },
-      { "type": "function", "name": "ownerOf", "stateMutability": "view", "inputs": [ { "name": "tokenId", "type": "uint256" } ], "outputs": [ { "type": "address" } ] },
-      { "type": "function", "name": "tokenURI", "stateMutability": "view", "inputs": [ { "name": "tokenId", "type": "uint256" } ], "outputs": [ { "type": "string" } ] }
-    ];
-
-    const account = privateKeyToAccount(PRIVATE_KEY);
-    const wallet = createWalletClient({ account, chain, transport: http() });
-    const publicClient = createPublicClient({ chain, transport: http() });
-
-    const uuid = uuid256.generateUuidV7();
-    const bridged = uuid256.uuidToU256(uuid);
-    const tokenId = BigInt(bridged);
-
-    await wallet.writeContract({ address: CONTRACT_ADDRESS, abi, functionName: "mint", args: [account.address, tokenId] });
-    const owner = await publicClient.readContract({ address: CONTRACT_ADDRESS, abi, functionName: "ownerOf", args: [tokenId] });
-    const uri = await publicClient.readContract({ address: CONTRACT_ADDRESS, abi, functionName: "tokenURI", args: [tokenId] });
-
-    const body = JSON.stringify({ uuid, bridged, owner, uri });
-    return new Response(body, { headers: { "content-type": "application/json" } });
   },
 };
 

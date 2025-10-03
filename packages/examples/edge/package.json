@@ -4,17 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev --local --port 8787",
-    "build": "echo 'No build step required for edge runtime'",
-    "test": "node test.mjs",
-    "e2e": "node e2e.mjs",
+    "dev": "wrangler dev",
+    "test": "node e2e.mjs",
     "clean": "rm -rf node_modules .wrangler"
   },
   "dependencies": {
     "uuid256": "file:../../lib/npm",
-    "viem": "^2.9.0"
+    "ethers": "^6.13.0"
   },
   "devDependencies": {
-    "wrangler": "^3.78.0"
+    "wrangler": "^4.42.0"
   }
 }

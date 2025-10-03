@@ -4,15 +4,8 @@ import { dirname } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const CONTRACT_ADDRESS = "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
+console.log("Starting Wrangler dev server...");
 
-if (!PRIVATE_KEY) {
-  console.error("Missing PRIVATE_KEY env var");
-  process.exit(1);
-}
-
-console.log("Starting Wrangler dev server (Base Sepolia)...");
 const wrangler = spawn("npm", ["run", "dev"], {
   cwd: __dirname,
   stdio: ["inherit", "pipe", "pipe"]
@@ -24,12 +17,11 @@ let output = "";
 wrangler.stdout.on("data", (data) => {
   const text = data.toString();
   output += text;
-  process.stdout.write(text); // Show wrangler output
+  process.stdout.write(text);
 
-  if (!serverReady && (output.includes("Ready on") || output.includes("http://127.0.0.1:8787"))) {
+  if (!serverReady && (output.includes("Ready on") || output.includes("localhost:8787"))) {
     serverReady = true;
     console.log("\n✓ Wrangler ready, running test...\n");
-    // Wait a bit for server to be fully ready
     setTimeout(testEdge, 2000);
   }
 });
@@ -41,7 +33,7 @@ wrangler.stderr.on("data", (data) => {
 
 async function testEdge() {
   try {
-    const url = `http://127.0.0.1:8787/?addr=${encodeURIComponent(CONTRACT_ADDRESS)}&pk=${encodeURIComponent(PRIVATE_KEY)}`;
+    const url = "http://localhost:8787/";
     console.log("Testing:", url);
 
     const response = await fetch(url);
@@ -52,7 +44,22 @@ async function testEdge() {
 
     const json = await response.json();
 
-    if (typeof json.uuid !== "string" || typeof json.bridged !== "string" || typeof json.owner !== "string" || typeof json.uri !== "string") {
+    // Check for error response
+    if (json.error) {
+      console.error("Worker returned error:", json.error);
+      if (json.hint) {
+        console.log("Hint:", json.hint);
+      }
+      throw new Error(json.error);
+    }
+
+    // Validate response structure
+    if (
+      typeof json.uuid !== "string" ||
+      typeof json.bridged !== "string" ||
+      typeof json.owner !== "string" ||
+      typeof json.tokenURI !== "string"
+    ) {
       console.error("Response:", json);
       throw new Error("Unexpected edge response shape");
     }
@@ -61,7 +68,8 @@ async function testEdge() {
     console.log("Response:", {
       uuid: json.uuid,
       bridged: json.bridged.substring(0, 20) + "...",
-      owner: json.owner
+      owner: json.owner,
+      txHash: json.txHash
     });
 
     process.exit(0);

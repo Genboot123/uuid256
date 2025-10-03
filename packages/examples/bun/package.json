@@ -1,12 +1,10 @@
 {
-  "name": "u256id-examples-bun",
+  "name": "uuid256-examples-bun",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "echo 'No build step required for bun runtime'",
-    "test": "bun run test.ts",
-    "e2e": "bun run test.ts",
+    "test": "bun --env-file=.env run test.ts",
     "clean": "rm -rf node_modules"
   },
   "dependencies": {

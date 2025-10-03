@@ -45,14 +45,6 @@ make test
 
 Runs all tests in parallel.
 
-### E2E Tests
-
-```bash
-make e2e
-```
-
-Runs all e2e tests in parallel.
-
 ### Clean
 
 ```bash
@@ -71,7 +63,6 @@ npm install
 npm run dev      # Start dev server
 npm run build    # Build for production
 npm run test     # Run tests
-npm run e2e      # Run e2e tests
 ```
 
 ### Node
@@ -80,7 +71,6 @@ npm run e2e      # Run e2e tests
 cd node
 npm install
 npm run test     # Run tests
-npm run e2e      # Run e2e tests
 ```
 
 ### Bun
@@ -89,7 +79,6 @@ npm run e2e      # Run e2e tests
 cd bun
 bun install
 bun run test     # Run tests
-bun run e2e      # Run e2e tests
 ```
 
 ### Edge
@@ -97,10 +86,13 @@ bun run e2e      # Run e2e tests
 ```bash
 cd edge
 npm install
+cp .dev.vars.example .dev.vars
+# Edit .dev.vars and add your PRIVATE_KEY
 npm run dev      # Start Wrangler dev server
 npm run test     # Run tests
-npm run e2e      # Run e2e tests
 ```
+
+**Note:** This example uses ethers.js for blockchain interaction. You need a private key with Base Sepolia testnet ETH.
 
 ## Environment Variables
 
@@ -119,4 +111,3 @@ CONTRACT_ADDRESS=0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c
 - `make dev` - Run dev servers in parallel
 - `make build` - Build all examples
 - `make test` - Run all tests in parallel
-- `make e2e` - Run all e2e tests in parallel
