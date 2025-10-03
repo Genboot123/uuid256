@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1>uuid256</h1>
+<h1>uuid256 🔑</h1>
 
 <p>UUID v7 ↔ EVM <code>uint256</code> bridge. UUID is canonical; tokenId encodes it in lower 128 bits.</p>
 
@@ -36,8 +36,26 @@ remaining interoperable with ERC‑721/1155 `tokenId`.
 
 ### Install
 
-- Node/Bun (npm): `npm i uuid256`
-- Deno (npm specifier): `import { uuid256 } from "npm:uuid256"`
+npm
+```bash
+npm i uuid256
+```
+
+pnpm
+```bash
+pnpm add uuid256
+```
+
+Bun
+```bash
+bun add uuid256
+
+```
+Deno
+```bash
+deno add jsr:posaune0423/uuid256
+```
+
 
 ### Quick start
 
