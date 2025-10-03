@@ -24,8 +24,8 @@
 </p>
 </div>
 
-`uuid256` はアプリの正準 ID を UUID v7 と定め、EVM `uint256` へは「上位 128bit を
-0、下位 128bit に UUID」を 詰めるルールでブリッジします。Web2
+`uuid256` はアプリの正準 ID を UUID v7 と定め、EVM `uint256` へは「上位 128bit
+を 0、下位 128bit に UUID」を 詰めるルールでブリッジします。Web2
 側（DB・API）の資産を保ちつつ、ERC‑721/1155 の `tokenId` と互換性を確保します。
 
 - コントラクト: `packages/contracts`（`Uuid256.sol`）
