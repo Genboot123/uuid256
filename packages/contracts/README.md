@@ -92,19 +92,19 @@ source .env
 export ETH_RPC_URL="$RPC_URL"   # optional: lets Foundry default to this RPC
 
 forge create src/Uuid256TestNFT.sol:Uuid256TestNFT \
-  --constructor-args "$NAME" "$SYMBOL" "$BASE_URI" \
   --rpc-url "$RPC_URL" \
   --private-key "$PRIVATE_KEY" \
-  --broadcast
+  --broadcast \
+  --constructor-args "$NAME" "$SYMBOL" "$BASE_URI"
 
 # With inline args and verification
 forge create src/Uuid256TestNFT.sol:Uuid256TestNFT \
-  --constructor-args "Uuid256TestNFT" "UTNFT" "ipfs://base/" \
   --rpc-url "$RPC_URL" \
   --private-key "$PRIVATE_KEY" \
   --broadcast \
   --verify \
-  --etherscan-api-key "$ETHERSCAN_API_KEY"
+  --etherscan-api-key "$ETHERSCAN_API_KEY" \
+  --constructor-args "Uuid256TestNFT" "UTNFT" "ipfs://base/"
 ```
 
 See Foundry docs for `forge create` and verification details: [Deploying and Verifying](https://getfoundry.sh/forge/deploying/).

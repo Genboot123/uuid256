@@ -3,57 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>U256ID Browser Example</title>
+    <title>U256ID Browser (React + Vite)</title>
   </head>
   <body>
-    <h1>U256ID Browser Example</h1>
-    <pre id="out"></pre>
-    <script type="module">
-      import { uuid256 } from "/node_modules/uuid256/esm/mod.js";
-      import { createWalletClient, createPublicClient, http } from "/node_modules/viem/esm/index.js";
-      import { privateKeyToAccount } from "/node_modules/viem/esm/accounts/privateKeyToAccount.js";
-
-      const params = new URLSearchParams(location.search);
-      const RPC_URL = params.get("rpc") || "http://127.0.0.1:8545";
-      const CONTRACT_ADDRESS = params.get("addr");
-      const PRIVATE_KEY = (params.get("pk") || "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80").toLowerCase();
-      const out = document.getElementById("out");
-
-      if (!CONTRACT_ADDRESS) {
-        out.textContent = "Missing addr param. Example: ?rpc=http://127.0.0.1:8545&addr=0x...";
-      } else {
-        try {
-          const account = privateKeyToAccount(PRIVATE_KEY);
-          const wallet = createWalletClient({ account, transport: http(RPC_URL) });
-          const publicClient = createPublicClient({ transport: http(RPC_URL) });
-
-          const abi = [
-            { type: "function", name: "mint", stateMutability: "nonpayable", inputs: [ { name: "to", type: "address" }, { name: "tokenId", type: "uint256" } ], outputs: [] },
-            { type: "function", name: "ownerOf", stateMutability: "view", inputs: [ { name: "tokenId", type: "uint256" } ], outputs: [ { type: "address" } ] },
-            { type: "function", name: "tokenURI", stateMutability: "view", inputs: [ { name: "tokenId", type: "uint256" } ], outputs: [ { type: "string" } ] },
-          ];
-
-          const uuid = uuid256.generateUuidV7();
-          const bridged = uuid256.uuidToU256(uuid);
-          const tokenId = BigInt(bridged);
-
-          await wallet.writeContract({ address: CONTRACT_ADDRESS, abi, functionName: "mint", args: [account.address, tokenId] });
-          const owner = await publicClient.readContract({ address: CONTRACT_ADDRESS, abi, functionName: "ownerOf", args: [tokenId] });
-          const uri = await publicClient.readContract({ address: CONTRACT_ADDRESS, abi, functionName: "tokenURI", args: [tokenId] });
-
-          const lines = [
-            `uuid v7: ${uuid}`,
-            `bridged u256: ${bridged}`,
-            `owner: ${owner}`,
-            `tokenURI: ${uri}`,
-          ];
-          out.textContent = lines.join("\n");
-          console.log("browser e2e ok");
-        } catch (e) {
-          out.textContent = String(e);
-          console.error(e);
-        }
-      }
-    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
   </html>

@@ -1,16 +1,19 @@
 import { uuid256 } from "uuid256";
 import { createWalletClient, createPublicClient, http } from "viem";
+import { baseSepolia } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
 
 async function main() {
-  const RPC_URL = process.env.RPC_URL || "http://127.0.0.1:8545";
-  const PRIVATE_KEY = (process.env.PRIVATE_KEY || "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80").toLowerCase();
-  const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
-  if (!CONTRACT_ADDRESS) throw new Error("Missing CONTRACT_ADDRESS env var");
+  const PRIVATE_KEY = process.env.PRIVATE_KEY;
+  const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
+  if (!PRIVATE_KEY) {
+    throw new Error("Missing PRIVATE_KEY env var. Set your private key with Base Sepolia funds.");
+  }
 
+  const chain = baseSepolia;
   const account = privateKeyToAccount(PRIVATE_KEY);
-  const wallet = createWalletClient({ account, transport: http(RPC_URL) });
-  const publicClient = createPublicClient({ transport: http(RPC_URL) });
+  const wallet = createWalletClient({ account, chain, transport: http() });
+  const publicClient = createPublicClient({ chain, transport: http() });
 
   // minimal ABI subset
   const abi = [

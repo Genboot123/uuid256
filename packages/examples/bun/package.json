@@ -1,18 +1,22 @@
 {
   "name": "u256id-examples-bun",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "bun run test.ts"
+    "build": "echo 'No build step required for bun runtime'",
+    "test": "bun run test.ts",
+    "e2e": "bun run test.ts",
+    "clean": "rm -rf node_modules"
   },
   "dependencies": {
     "uuid256": "file:../../lib/npm",
-    "viem": "^2.9.0"
+    "viem": "^2.37.12"
   },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   }
 }

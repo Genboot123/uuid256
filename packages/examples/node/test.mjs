@@ -1,20 +1,23 @@
 import { uuid256 } from "uuid256";
 import { createWalletClient, createPublicClient, http } from "viem";
+import { baseSepolia } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
 import { fileURLToPath } from "node:url";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
+import { process } from "node:process";
 
 async function main() {
   if (typeof globalThis.crypto === "undefined") {
     throw new Error("WebCrypto should be available in ESM (Node >=18) or via polyfill");
   }
 
-  const RPC_URL = process.env.RPC_URL || "http://127.0.0.1:8545";
-  const PRIVATE_KEY = (process.env.PRIVATE_KEY || "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80").toLowerCase();
-  const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
-  if (!CONTRACT_ADDRESS) {
-    console.error("Missing CONTRACT_ADDRESS env var. Deploy Uuid256TestNFT and set CONTRACT_ADDRESS.");
+  // Use Base Sepolia only
+  const chain = baseSepolia;
+  const PRIVATE_KEY = process.env.PRIVATE_KEY;
+  const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
+  if (!PRIVATE_KEY) {
+    console.error("Missing PRIVATE_KEY env var. Set your private key with Base Sepolia funds.");
     process.exit(1);
   }
 
@@ -24,8 +27,8 @@ async function main() {
   const abi = artifact.abi;
 
   const account = privateKeyToAccount(PRIVATE_KEY);
-  const wallet = createWalletClient({ account, transport: http(RPC_URL) });
-  const publicClient = createPublicClient({ transport: http(RPC_URL) });
+  const wallet = createWalletClient({ account, chain, transport: http() });
+  const publicClient = createPublicClient({ chain, transport: http() });
 
   const uuid = uuid256.generateUuidV7();
   const bridged = uuid256.uuidToU256(uuid);

@@ -1,5 +1,5 @@
-import { expect } from "jsr:@std/expect@1";
-import { test } from "jsr:@std/testing@1/bdd";
+import { expect } from "@std/expect";
+import { test } from "@std/testing/bdd";
 import {
   asUuid,
   generateUuidV7,

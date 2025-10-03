@@ -1,16 +1,19 @@
 import { uuid256 } from "uuid256";
 import { createWalletClient, createPublicClient, http } from "viem";
+import { baseSepolia } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
 
 const worker = {
   async fetch(req) {
     const url = new URL(req.url);
-    const RPC_URL = url.searchParams.get("rpc") || "http://127.0.0.1:8545";
-    const CONTRACT_ADDRESS = url.searchParams.get("addr");
-    const PRIVATE_KEY = (url.searchParams.get("pk") || "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80").toLowerCase();
-    if (!CONTRACT_ADDRESS) {
-      return new Response(JSON.stringify({ error: "missing addr param" }), { status: 400 });
+    const CONTRACT_ADDRESS = url.searchParams.get("addr") || "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
+    const PRIVATE_KEY = url.searchParams.get("pk");
+    if (!PRIVATE_KEY) {
+      return new Response(JSON.stringify({ error: "missing pk param" }), { status: 400 });
     }
+
+    // Use Base Sepolia only
+    const chain = baseSepolia;
 
     // minimal ABI for mint/ownerOf/tokenURI
     const abi = [
@@ -21,8 +24,8 @@ const worker = {
     ];
 
     const account = privateKeyToAccount(PRIVATE_KEY);
-    const wallet = createWalletClient({ account, transport: http(RPC_URL) });
-    const publicClient = createPublicClient({ transport: http(RPC_URL) });
+    const wallet = createWalletClient({ account, chain, transport: http() });
+    const publicClient = createPublicClient({ chain, transport: http() });
 
     const uuid = uuid256.generateUuidV7();
     const bridged = uuid256.uuidToU256(uuid);
