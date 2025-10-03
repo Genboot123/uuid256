@@ -32,5 +32,5 @@ jobs:
 
       - name: Run Deno tests
         run: |
-          deno test -vvv
+          deno test
         id: test
