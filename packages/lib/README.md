@@ -27,12 +27,40 @@
 
 `uuid256` makes UUID v7 the canonical application identifier and bridges to EVM
 `uint256` by packing the UUID into the lower 128 bits. The upper 128 bits MUST
-be zero. This keeps Web2 compatibility (UUIDs in databases, APIs) while
-remaining interoperable with ERC‑721/1155 `tokenId`.
+be zero. This preserves off‑chain compatibility (databases and APIs that use
+UUIDs) and stays interoperable with ERC‑721/1155 `tokenId`.
 
 - Contracts: `packages/contracts` (see `Uuid256.sol`)
 - Library (Deno/TypeScript): `packages/lib` (this package)
 - Examples: `packages/examples`
+
+## Background & Motivation
+
+### Problem
+
+Off‑chain systems (databases, APIs) use UUIDs. ERC‑721/1155 use `uint256` token IDs.
+This ID format mismatch forces custom mapping logic and tight coupling between
+off‑chain and on‑chain data.
+
+Common workarounds have trade‑offs:
+
+1. Maintain UUID↔`uint256` mapping tables → more code, more failure points
+2. Switch to integers everywhere → lose UUID features (collision resistance, time‑ordering)
+3. Put UUIDs on‑chain → breaks ERC compatibility
+
+### Solution
+
+`uuid256` provides a deterministic, bidirectional, stateless bridge:
+
+- ✅ UUID v7 remains the canonical ID
+- ✅ Deterministic encoding into lower 128 bits (upper 128 bits always zero)
+- ✅ Fully reversible
+- ✅ No mapping tables (pure algorithm)
+- ✅ Compatible with ERC‑721/1155
+
+`tokenId` is the UUID, encoded into `uint256`.
+
+---
 
 ### Install
 
@@ -78,7 +106,7 @@ const { webcrypto } = require("node:crypto");
 uuid256.setCrypto(webcrypto);
 ```
 
-### Worked numeric example
+### Numeric example
 
 - UUID v7 (string): `01234567-89ab-7cde-8f01-23456789abcdef`
 - Remove dashes, lowercase (32 hex): `0123456789ab7cde8f0123456789abcdef`
@@ -89,7 +117,7 @@ uuid256.setCrypto(webcrypto);
     `0x000000000000000000000000000000000123456789ab7cde8f0123456789abcdef`
 - Reverse bridge validates upper 128 == 0 and returns the UUID string again.
 
-### Representation summary
+### Representation
 
 | Form             | Type          |     Size | Example                                  |
 | ---------------- | ------------- | -------: | ---------------------------------------- |
@@ -98,45 +126,44 @@ uuid256.setCrypto(webcrypto);
 
 ---
 
-## RFC‑style Specification (Informational/Standards‑Track)
+## Specification
 
-### 1. Status of This Memo
+### Status
 
-This document specifies uuid256, a bidirectional bridge between UUID v7 and EVM
-`uint256`. Distribution of this memo is unlimited.
+Defines a bidirectional bridge between UUID v7 and EVM `uint256`.
 
-### 2. Terminology
+### Terminology
 
 The key words “MUST”, “MUST NOT”, “SHOULD”, “MAY” are to be interpreted as
 described in RFC 2119.
 
-### 3. Canonical Identifier
+### Canonical identifier
 
 - The canonical identifier is UUID version 7 (UUIDv7). Applications MUST treat
   the UUID string as the primary key.
 
-### 4. Bridged Representation
+### Bridged representation
 
 - A bridged identifier is an EVM `uint256` whose upper 128 bits are all zero and
   whose lower 128 bits equal the UUID bytes `(big‑endian)`. Implementations MUST
   produce a canonical lowercase hex string with the `0x` prefix and exactly 64
   hex digits.
 
-### 5. Encoding and Decoding
+### Encoding and decoding
 
 - Encoding (UUID → `uint256`): lower128 = UUID; upper128 = 0.
 - Decoding (`uint256` → UUID): implementations MUST reject inputs that are not
   `0x` + 64 lowercase hex (`INVALID_U256_FORMAT`) or have upper128 ≠ 0
   (`UPPER128_NOT_ZERO`).
 
-### 6. Validation
+### Validation
 
 - UUID inputs MUST match UUIDv7 syntax: `8-4-4-4-12` with `version=7` and RFC
   4122 variant.
 - Implementations MAY downcase hex. On failure, they MUST throw
   `INVALID_UUID_FORMAT`.
 
-### 7. Errors
+### Errors
 
 | Code                  | When                                      |
 | --------------------- | ----------------------------------------- |
@@ -144,7 +171,7 @@ described in RFC 2119.
 | `INVALID_U256_FORMAT` | Not `0x` + 64 hex                         |
 | `UPPER128_NOT_ZERO`   | Reverse bridge and upper 128 bits ≠ 0     |
 
-### 8. Security Considerations
+### Security
 
 - UUID generation MUST use a CSPRNG for non‑timestamp bits.
 - Reverse bridging MUST validate upper 128 bits are zero.

@@ -19,18 +19,42 @@
         <img src="https://img.shields.io/npm/v/uuid256.svg" alt="npm package" />
       </a>
       <a href="https://npmjs.org/package/uuid256">
-        <img alt="downloads" src="https://img.shields.io/npm/d18m/uuid256" />
+        <img alt="downloads" src="https://img.shields.io/npm/dm/uuid256" />
       </a>
 </p>
 </div>
 
-`uuid256` はアプリの正準 ID を UUID v7 と定め、EVM `uint256` へは「上位 128bit
-を 0、下位 128bit に UUID」を 詰めるルールでブリッジします。Web2
-側（DB・API）の資産を保ちつつ、ERC‑721/1155 の `tokenId` と互換性を確保します。
+`uuid256` はアプリの正準 ID を UUID v7 とし、EVM `uint256` へは「下位 128bit = UUID、上位 128bit = 0」でブリッジします。オフチェーン（DB / API）の UUID 資産を保ちつつ、ERC‑721/1155 の `tokenId` と互換性を維持します。
 
 - コントラクト: `packages/contracts`（`Uuid256.sol`）
 - ライブラリ (Deno/TypeScript): `packages/lib`
 - サンプル: `packages/examples`
+
+## 背景と動機
+
+### 課題
+
+オフチェーン（DB / API）は UUID、ERC‑721/1155 は `uint256` の tokenId を使います。この形式の違いが、独自マッピングや密結合を生みます。
+
+よくある回避策と欠点：
+
+1. UUID↔`uint256` のテーブル管理 → 実装増、故障点増加
+2. 整数IDへ置換 → UUID の利点（衝突耐性・時系列性）を失う
+3. オンチェーンで UUID を使う → ERC 非互換
+
+### 解決策
+
+決定論的・双方向・ステートレスなブリッジ：
+
+- ✅ UUID v7 を正準 ID として維持
+- ✅ 下位 128bit に決定論的にエンコード（上位 128bit は常に 0）
+- ✅ 完全に可逆
+- ✅ マッピング不要（純粋アルゴリズム）
+- ✅ ERC‑721/1155 と互換
+
+`tokenId` は UUID を `uint256` にエンコードした表現です。
+
+---
 
 ### インストール
 
@@ -76,7 +100,7 @@ const { webcrypto } = require("node:crypto");
 uuid256.setCrypto(webcrypto);
 ```
 
-### 数値例（ワークド例）
+### 数値例
 
 - UUID v7（文字列）: `01234567-89ab-7cde-8f01-23456789abcdef`
 - ダッシュ除去・小文字（32 hex）: `0123456789ab7cde8f0123456789abcdef`
@@ -87,7 +111,7 @@ uuid256.setCrypto(webcrypto);
     `0x000000000000000000000000000000000123456789ab7cde8f0123456789abcdef`
 - 逆変換では上位 128bit = 0 を必ず検証し、元の UUID 文字列を返す。
 
-### 表現サマリ
+### 表現
 
 | 形式         | 型            |   サイズ | 例                                       |
 | ------------ | ------------- | -------: | ---------------------------------------- |
@@ -96,39 +120,39 @@ uuid256.setCrypto(webcrypto);
 
 ---
 
-## RFC 風 仕様（情報・標準）
+## 仕様
 
-### 1. このメモの位置付け
+### 位置付け
 
-uuid256 は UUID v7 と EVM `uint256` の相互ブリッジ仕様です。
+UUID v7 と EVM `uint256` の相互ブリッジを定義します。
 
-### 2. 用語
+### 用語
 
 「MUST」「MUST NOT」「SHOULD」「MAY」は RFC 2119 に従い解釈します。
 
-### 3. 正準 ID
+### 正準 ID
 
 アプリの正準 ID は UUID v7 としなければなりません（MUST）。
 
-### 4. ブリッジ表現
+### ブリッジ表現
 
 ブリッジ ID は EVM `uint256` とし、上位 128bit を 0、下位 128bit に UUID
 を格納します（MUST）。 表現は `0x` + 64 桁の小文字 16 進数とします（MUST）。
 
-### 5. 変換
+### 変換
 
 - UUID → `uint256`: 下位 128 = UUID、上位 128 = 0。
 - `uint256` → UUID: `0x+64hex` でない入力（`INVALID_U256_FORMAT`）や、上位 128 ≠
   0 （`UPPER128_NOT_ZERO`）は拒否します（MUST）。
 
-### 6. 検証
+### 検証
 
 - UUID は UUIDv7 構文（`8-4-4-4-12`、version=7、RFC 4122
   variant）を満たす必要があります（MUST）。
 - 実装は小文字化してもかまいません（MAY）。不一致は `INVALID_UUID_FORMAT`
   を投げます（MUST）。
 
-### 7. エラーコード
+### エラー
 
 | コード                | 発生条件                  |
 | --------------------- | ------------------------- |
@@ -136,7 +160,7 @@ uuid256 は UUID v7 と EVM `uint256` の相互ブリッジ仕様です。
 | `INVALID_U256_FORMAT` | `0x` + 64 hex ではない    |
 | `UPPER128_NOT_ZERO`   | 逆変換時に上位 128bit ≠ 0 |
 
-### 8. セキュリティ
+### セキュリティ
 
 - UUID 生成は CSPRNG を必ず使用します（MUST）。
 - 逆変換時は上位 128bit = 0 の検証を必須とします（MUST）。
