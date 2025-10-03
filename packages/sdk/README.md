@@ -2,91 +2,135 @@
 
 <h1>uuid256 (SDK)</h1>
 
-<p>UUID‑canonical SDK with a bridge to EVM `uint256` tokenId (lower 128 bits)</p>
+<p>UUID v7 ↔ EVM <code>uint256</code> bridge. UUID is canonical; tokenId encodes it in lower 128 bits.</p>
 
 <p>
   <a href="https://github.com/posaune0423/uuid256/actions/workflows/test-sdk.yml">
     <img alt="CI" src="https://github.com/posaune0423/uuid256/actions/workflows/test-sdk.yml/badge.svg" />
-      </a>
-      <a href="https://www.npmjs.com/package/u256id">
-        <img src="https://img.shields.io/npm/v/u256id.svg" alt="npm package" />
-      </a>
+  </a>
+  <a href="https://www.npmjs.com/package/uuid256">
+    <img src="https://img.shields.io/npm/v/uuid256.svg" alt="npm package" />
+  </a>
   </p>
 </div>
 
-This SDK treats UUID v7 as the sole canonical ID and bridges to EVM `uint256`
-by packing the UUID into the lower 128 bits (upper 128 bits fixed to zero).
-
-Why: keep Web2 compatibility (UUID as primary key, existing DB tooling) while
+This SDK makes UUID v7 the canonical application identifier and bridges to EVM
+`uint256` by packing the UUID into the lower 128 bits. The upper 128 bits MUST
+be zero. This keeps Web2 compatibility (UUIDs in databases, APIs) while
 remaining interoperable with ERC‑721/1155 `tokenId`.
 
 - Contracts: `packages/contracts` (see `Uuid256.sol`)
 - SDK (Deno/TypeScript): `packages/sdk` (this package)
 - Examples: `packages/examples`
 
-## Bridge rule
+### Install
 
-```
-tokenId = uint256(uint128(uuid_bytes16))
-// upper 128 bits MUST be zero
-```
+- Node/Bun (npm): `npm i uuid256`
+- Deno (npm specifier): `import { uuid256 } from "npm:uuid256"`
 
-## Install
-
-- npm (Node/Bun): `npm i u256id`
-- Deno (npm specifier): `import { uuid256 } from "npm:u256id"` or from your bundler
-
-## Quick start
+### Quick start
 
 ```ts
-import { uuid256 } from "u256id";
+import { uuid256 } from "uuid256";
 
-// UUID v7 generation (canonical)
 const uuid = uuid256.generateUuidV7();
-
-// Bridge to uint256 (0x + 64 hex, upper 128 bits = 0)
-const tokenId = uuid256.uuidToU256(uuid);
-
-// Reverse bridge (validates upper 128 bits are zero)
-const back = uuid256.u256ToUuid(tokenId);
+const tokenId = uuid256.uuidToU256(uuid); // 0x + 64 hex (lower 128 = uuid, upper 128 = 0)
+const back = uuid256.u256ToUuid(tokenId); // validates upper 128 bits are zero
 ```
 
 Node CJS with WebCrypto injection (if needed):
 
 ```js
-const { uuid256 } = require("u256id");
+const { uuid256 } = require("uuid256");
 const { webcrypto } = require("node:crypto");
 uuid256.setCrypto(webcrypto);
 ```
 
+### Worked numeric example
+
+- UUID v7 (string): `01234567-89ab-7cde-8f01-23456789abcdef`
+- Remove dashes, lowercase (32 hex): `0123456789ab7cde8f0123456789abcdef`
+- Bridge to `uint256`:
+  - Lower 128 bits = `0x0123456789ab7cde8f0123456789abcdef`
+  - Upper 128 bits = `0x00000000000000000000000000000000`
+  - Canonical `uint256` (0x + 64 hex):
+    `0x000000000000000000000000000000000123456789ab7cde8f0123456789abcdef`
+- Reverse bridge validates upper 128 == 0 and returns the UUID string again.
+
+### Representation summary
+
+| Form             | Type          |     Size | Example                                  |
+| ---------------- | ------------- | -------: | ---------------------------------------- |
+| UUID (canonical) | string        | 36 chars | `01234567-89ab-7cde-8f01-23456789abcdef` |
+| Bridged id       | `uint256` hex | 66 chars | `0x0000…0000` + 32 hex (see above)       |
+
+---
+
+## RFC‑style Specification (Informational/Standards‑Track)
+
+### 1. Status of This Memo
+
+This document specifies uuid256, a bidirectional bridge between UUID v7 and EVM
+`uint256`. Distribution of this memo is unlimited.
+
+### 2. Terminology
+
+The key words “MUST”, “MUST NOT”, “SHOULD”, “MAY” are to be interpreted as
+described in RFC 2119.
+
+### 3. Canonical Identifier
+
+- The canonical identifier is UUID version 7 (UUIDv7). Applications MUST treat
+  the UUID string as the primary key.
+
+### 4. Bridged Representation
+
+- A bridged identifier is an EVM `uint256` whose upper 128 bits are all zero and
+  whose lower 128 bits equal the UUID bytes `(big‑endian)`. Implementations MUST
+  produce a canonical lowercase hex string with the `0x` prefix and exactly 64
+  hex digits.
+
+### 5. Encoding and Decoding
+
+- Encoding (UUID → `uint256`): lower128 = UUID; upper128 = 0.
+- Decoding (`uint256` → UUID): implementations MUST reject inputs that are not
+  `0x` + 64 lowercase hex (`INVALID_U256_FORMAT`) or have upper128 ≠ 0
+  (`UPPER128_NOT_ZERO`).
+
+### 6. Validation
+
+- UUID inputs MUST match UUIDv7 syntax: `8-4-4-4-12` with `version=7` and RFC
+  4122 variant.
+- Implementations MAY downcase hex. On failure, they MUST throw
+  `INVALID_UUID_FORMAT`.
+
+### 7. Errors
+
+| Code                  | When                                      |
+| --------------------- | ----------------------------------------- |
+| `INVALID_UUID_FORMAT` | Input string does not match UUIDv7 syntax |
+| `INVALID_U256_FORMAT` | Not `0x` + 64 hex                         |
+| `UPPER128_NOT_ZERO`   | Reverse bridge and upper 128 bits ≠ 0     |
+
+### 8. Security Considerations
+
+- UUID generation MUST use a CSPRNG for non‑timestamp bits.
+- Reverse bridging MUST validate upper 128 bits are zero.
+
+---
+
 ## API
 
-- `generateUuidV7(): Uuid`
-  - Create a UUID v7 string (`8-4-4-4-12`, lowercase). Uses CSPRNG.
+- `generateUuidV7(): Uuid` — Create a UUID v7 string (lowercase). Uses CSPRNG.
 - `isUuid(s: string): s is Uuid`
 - `asUuid(s: string): Uuid` — throws `INVALID_UUID_FORMAT` on failure
-- `uuidToU256(uuid: string): U256Hex`
-  - Returns canonical `0x` + 64 lowercase hex; upper 128 bits are zero.
-- `u256ToUuid(id: string): Uuid`
-  - Throws `INVALID_U256_FORMAT` if not `0x+64hex`, and `UPPER128_NOT_ZERO` if the upper 128 bits are non‑zero.
-- `setCrypto(crypto: Crypto): void`
-  - Provide WebCrypto (Node environments that lack `globalThis.crypto`).
-
-## Spec (normative summary)
-
-- Canonical ID: UUID v7 (MUST)
-- On‑chain generation: disallowed (MUST NOT)
-- Bridge `uint256`: upper 128 bits = 0, lower 128 bits = UUID (MUST)
-- API input: MAY accept `0x+64hex`; MUST validate `upper128 == 0` before reverse bridging
-- API output: UUID (MUST), with optional `uint256` companion (MAY)
+- `uuidToU256(uuid: string): U256Hex` — returns canonical `0x` + 64 lowercase
+  hex (upper 128 bits are zero)
+- `u256ToUuid(id: string): Uuid` — throws `INVALID_U256_FORMAT` or
+  `UPPER128_NOT_ZERO`
+- `setCrypto(crypto: Crypto): void` — provide WebCrypto (for Node environments
+  without `globalThis.crypto`)
 
 ## Examples
 
 See `packages/examples` for Node, Browser, Bun, and Edge workers.
-
-## Security considerations
-
-- Use CSPRNG (`crypto.getRandomValues`) (MUST)
-- Always validate the upper 128 bits before reverse bridging (MUST)
-
-— Reference: RFC 2119

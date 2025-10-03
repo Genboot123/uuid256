@@ -17,20 +17,19 @@ await build({
   },
   package: {
     // package.json properties
-    name: "u256id",
+    name: "uuid256",
     version: Deno.args[0],
     types: "./esm/mod.d.ts",
     author: "posaune0423",
     description:
-      "U256ID v2 (canonical: 0x + 64 hex; HR: Base58; versions: v0, v1)",
+      "uuid256 SDK: UUID v7 canonical \u2194 uint256 bridge (lower 128 bits)",
     license: "MIT",
     keywords: [
-      "u256id",
+      "uuid256",
       "uint256",
       "ethereum",
       "solidity",
       "canonical",
-      "base58",
       "hex",
       "uniqueentifier",
       "web3",
@@ -53,10 +52,10 @@ await build({
     ],
     repository: {
       type: "git",
-      url: "git+https://github.com/posaune0423/u256id.git",
+      url: "git+https://github.com/posaune0423/uuid256.git",
     },
     bugs: {
-      url: "https://github.com/posaune0423/u256id/issues",
+      url: "https://github.com/posaune0423/uuid256/issues",
     },
   },
   postBuild() {

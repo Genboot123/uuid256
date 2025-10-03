@@ -1,35 +1,10 @@
 import type { U256Hex, Uuid } from "./types.ts";
-
-// WebCrypto wiring (Node needs explicit injection sometimes)
-let cryptoImpl: Crypto | undefined = (globalThis as { crypto?: Crypto }).crypto;
-export function setCrypto(crypto: Crypto): void {
-  cryptoImpl = crypto;
-}
-function requireCrypto(): Crypto {
-  if (!cryptoImpl || typeof cryptoImpl.getRandomValues !== "function") {
-    throw new Error(
-      "WebCrypto not available. Use setCrypto(webcrypto) in Node.",
-    );
-  }
-  return cryptoImpl;
-}
-
-function toHex(bytes: Uint8Array): string {
-  return [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-function rnd(n: number): Uint8Array {
-  const a = new Uint8Array(n);
-  requireCrypto().getRandomValues(a);
-  return a;
-}
-
-const RE_UUID_V7 =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
-const RE_U256 = /^0x[0-9a-f]{64}$/;
+import { uuidV7Generate, validateUuid } from "./deps.ts";
+import { RE_U256 } from "./const.ts";
 
 export function isUuid(s: string): s is Uuid {
-  return RE_UUID_V7.test(s);
+  if (!validateUuid(s)) return false;
+  return s.length === 36 && s[14] === "7";
 }
 export function asUuid(s: string): Uuid {
   if (!isUuid(s)) throw new Error("INVALID_UUID_FORMAT");
@@ -37,26 +12,7 @@ export function asUuid(s: string): Uuid {
 }
 
 export function generateUuidV7(): Uuid {
-  const b = new Uint8Array(16);
-  const ts = BigInt(Date.now()); // milliseconds since Unix epoch
-  // write 48-bit timestamp (big-endian) into b[0..5]
-  b[0] = Number((ts >> 40n) & 0xffn);
-  b[1] = Number((ts >> 32n) & 0xffn);
-  b[2] = Number((ts >> 24n) & 0xffn);
-  b[3] = Number((ts >> 16n) & 0xffn);
-  b[4] = Number((ts >> 8n) & 0xffn);
-  b[5] = Number(ts & 0xffn);
-  // fill remaining with random
-  const r = rnd(10);
-  b.set(r, 6);
-  // set version 7 in b[6] high nibble
-  b[6] = (b[6] & 0x0f) | 0x70;
-  // set RFC 4122 variant (10xxxxxx) in b[8]
-  b[8] = (b[8] & 0x3f) | 0x80;
-  const hex = toHex(b);
-  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${
-    hex.slice(16, 20)
-  }-${hex.slice(20)}` as Uuid;
+  return uuidV7Generate() as Uuid;
 }
 
 function toCanonicalU256Hex(x: bigint): U256Hex {
