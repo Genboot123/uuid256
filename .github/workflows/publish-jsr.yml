@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: packages/sdk
+        working-directory: packages/lib
     permissions:
       contents: read
       id-token: write # The OIDC ID token is used for authentication with JSR.

@@ -1,4 +1,4 @@
-name: test-sdk
+name: test-lib
 
 on:
   push:
@@ -11,11 +11,11 @@ on:
 
 jobs:
   ci:
-    name: ci for sdk
+    name: ci for lib
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: packages/sdk
+        working-directory: packages/lib
     steps:
       - name: Checkout
         uses: actions/checkout@v4
