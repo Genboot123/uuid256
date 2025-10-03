@@ -4,13 +4,9 @@ import { dirname } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+const CONTRACT_ADDRESS = "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
-if (!CONTRACT_ADDRESS) {
-  console.error("Missing CONTRACT_ADDRESS env var");
-  process.exit(1);
-}
 if (!PRIVATE_KEY) {
   console.error("Missing PRIVATE_KEY env var");
   process.exit(1);

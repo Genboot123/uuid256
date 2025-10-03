@@ -15,7 +15,7 @@ async function main() {
   // Use Base Sepolia only
   const chain = baseSepolia;
   const PRIVATE_KEY = process.env.PRIVATE_KEY;
-  const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
+  const CONTRACT_ADDRESS = "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
   if (!PRIVATE_KEY) {
     console.error("Missing PRIVATE_KEY env var. Set your private key with Base Sepolia funds.");
     process.exit(1);

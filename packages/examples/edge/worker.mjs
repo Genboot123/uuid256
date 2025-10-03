@@ -6,7 +6,7 @@ import { privateKeyToAccount } from "viem/accounts";
 const worker = {
   async fetch(req) {
     const url = new URL(req.url);
-    const CONTRACT_ADDRESS = url.searchParams.get("addr") || "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
+    const CONTRACT_ADDRESS = "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
     const PRIVATE_KEY = url.searchParams.get("pk");
     if (!PRIVATE_KEY) {
       return new Response(JSON.stringify({ error: "missing pk param" }), { status: 400 });

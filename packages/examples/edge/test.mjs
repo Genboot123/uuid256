@@ -1,6 +1,4 @@
-import process from "node:process";
-
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
+const CONTRACT_ADDRESS = "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 if (!PRIVATE_KEY) {
   console.error("Missing PRIVATE_KEY env var");

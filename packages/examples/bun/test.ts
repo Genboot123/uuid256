@@ -4,8 +4,8 @@ import { baseSepolia } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
 
 async function main() {
-  const PRIVATE_KEY = process.env.PRIVATE_KEY;
-  const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
+  const PRIVATE_KEY = process.env.PRIVATE_KEY as `0x${string}`;
+  const CONTRACT_ADDRESS = "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
   if (!PRIVATE_KEY) {
     throw new Error("Missing PRIVATE_KEY env var. Set your private key with Base Sepolia funds.");
   }

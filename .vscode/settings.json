@@ -7,6 +7,7 @@
 
   "deno.disablePaths": [
     "packages/contracts",
+    "packages/examples",
   ],
 
   "editor.defaultFormatter": "denoland.vscode-deno",
