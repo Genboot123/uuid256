@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
-import {Uuid256} from "../src/Uuid256.sol";
+import { Uuid256 } from "../src/Uuid256.sol";
 
 /// @dev Harness to ensure the revert happens in a deeper call frame than the cheatcode
 contract Uuid256Harness {

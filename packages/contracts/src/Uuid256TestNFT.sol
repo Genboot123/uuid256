@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {ERC721} from "lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
-import {Strings} from "lib/openzeppelin-contracts/contracts/utils/Strings.sol";
-import {Uuid256} from "./Uuid256.sol";
+import { ERC721 } from "lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
+import { Strings } from "lib/openzeppelin-contracts/contracts/utils/Strings.sol";
+import { Uuid256 } from "./Uuid256.sol";
 
-contract MyNFT is ERC721 {
+contract Uuid256TestNFT is ERC721 {
     using Uuid256 for uint256;
     using Strings for uint256;
 

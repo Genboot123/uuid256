@@ -31,7 +31,7 @@ $ anvil --version
 
 ## Project Layout
 
-- `src/` — production contracts (e.g. `U256ID.sol`, `MyNFT.sol`)
+- `src/` — production contracts (e.g. `Uuid256.sol`, `Uuid256TestNFT.sol`)
 - `test/` — Foundry tests (`*.t.sol`)
 - `lib/` — vendored dependencies (do not edit directly)
 - `out/` — build artifacts (auto-generated)
@@ -70,34 +70,58 @@ $ forge snapshot
 $ anvil
 ```
 
-### Deploy
+### Deploy `Uuid256TestNFT`
 
-Set environment variables (recommended):
+Create a `.env` in this directory (or export the variables):
 
 ```shell
-$ export RPC_URL=<https://sepolia.infura.io/v3/XXXXX>
-$ export PRIVATE_KEY=<0x...>   # use a funded deployer key; keep it secret
+cat > .env <<'EOF'
+NAME=Uuid256TestNFT
+SYMBOL=UTNFT
+BASE_URI=ipfs://base/
+RPC_URL=<https://sepolia.infura.io/v3/XXXXX>
+PRIVATE_KEY=<0x...>  # funded deployer; keep it secret
+# ETHERSCAN_API_KEY=<optional>
+EOF
 ```
 
-`U256ID.sol` is a pure library and is not deployed. Deploy `MyNFT` with constructor args:
+Deploy with `forge create`:
 
 ```shell
-$ forge create \
+source .env
+export ETH_RPC_URL="$RPC_URL"   # optional: lets Foundry default to this RPC
+
+forge create src/Uuid256TestNFT.sol:Uuid256TestNFT \
+  --constructor-args "$NAME" "$SYMBOL" "$BASE_URI" \
   --rpc-url "$RPC_URL" \
   --private-key "$PRIVATE_KEY" \
-  src/MyNFT.sol:MyNFT \
-  --constructor-args "MyNFT" "MNFT" "https://example.com/metadata/"
+  --broadcast
+
+# With inline args and verification
+forge create src/Uuid256TestNFT.sol:Uuid256TestNFT \
+  --constructor-args "Uuid256TestNFT" "UTNFT" "ipfs://base/" \
+  --rpc-url "$RPC_URL" \
+  --private-key "$PRIVATE_KEY" \
+  --broadcast \
+  --verify \
+  --etherscan-api-key "$ETHERSCAN_API_KEY"
 ```
 
-Mint using an off-chain generated U256ID (see SDK at `packages/sdk/README.md`):
+See Foundry docs for `forge create` and verification details: [Deploying and Verifying](https://getfoundry.sh/forge/deploying/).
+
+Mint a bridged tokenId (lower 128 bits UUID; upper 128 must be zero):
 
 ```shell
-# Replace $NFT with the deployed address and $TOKEN_ID with a valid v0/v1 U256ID
-$ cast send "$NFT" "mint(address,uint256)" <recipient_address> $TOKEN_ID \
+# Example UUID bytes16 -> uint256 (keeps upper 128 bits zero)
+TOKEN_ID=$(cast --to-uint256 0x01890f882bbf7c84bec06fbb8cbfcdad)
+NFT=<deployed_address>
+
+# Mint
+cast send "$NFT" "mint(address,uint256)" <recipient_address> "$TOKEN_ID" \
   --rpc-url "$RPC_URL" --private-key "$PRIVATE_KEY"
 
 # Read tokenURI
-$ cast call "$NFT" "tokenURI(uint256)" $TOKEN_ID --rpc-url "$RPC_URL"
+cast call "$NFT" "tokenURI(uint256)" "$TOKEN_ID" --rpc-url "$RPC_URL"
 ```
 
 ### Cast

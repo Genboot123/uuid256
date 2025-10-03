@@ -6,6 +6,7 @@
     "test": "bun run quickstart.ts"
   },
   "dependencies": {
-    "u256id": "file:../../sdk/npm"
+    "u256id": "file:../../sdk/npm",
+    "viem": "^2.9.0"
   }
 }

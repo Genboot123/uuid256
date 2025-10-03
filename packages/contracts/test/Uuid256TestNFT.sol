@@ -2,14 +2,14 @@
 pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
-import {MyNFT} from "../src/MyNFT.sol";
-import {Uuid256} from "../src/Uuid256.sol";
+import { Uuid256TestNFT } from "../src/Uuid256TestNFT.sol";
+import { Uuid256 } from "../src/Uuid256.sol";
 
-contract MyNFTTest is Test {
-    MyNFT nft;
+contract Uuid256TestNFTTest is Test {
+    Uuid256TestNFT nft;
 
     function setUp() public {
-        nft = new MyNFT("MyNFT", "MNFT", "ipfs://base/");
+        nft = new Uuid256TestNFT("Uuid256TestNFT", "UTNFT", "ipfs://base/");
     }
 
     function test_mint_accepts_when_upper128_zero_and_tokenURI_canonical() public {
