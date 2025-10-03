@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>U256ID Browser Example</title>
+  </head>
+  <body>
+    <h1>U256ID Browser Example</h1>
+    <pre id="out"></pre>
+    <script type="module">
+      import { u256id } from "/node_modules/u256id/esm/mod.js";
+      const id = u256id.u256idV1();
+      const lines = [
+        `canonical: ${id}`,
+        `version: ${u256id.versionOf(id)}`,
+        `hr: ${u256id.toBase58(id)}`,
+        `short: ${u256id.toShort(id)}`,
+      ];
+      document.getElementById("out").textContent = lines.join("\n");
+      console.log(lines.join("\n"));
+    </script>
+  </body>
+  </html>

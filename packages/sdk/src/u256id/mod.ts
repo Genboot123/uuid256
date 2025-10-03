@@ -16,9 +16,9 @@
 export type { U256Hex } from "./types.ts";
 export {
   asCanonical,
-  example,
   fromBase58,
   isCanonical,
+  setCrypto,
   toBase58,
   toShort,
   u256idV0,

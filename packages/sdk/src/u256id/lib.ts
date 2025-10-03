@@ -15,9 +15,23 @@ const B58_INDEX: Record<string, number> = (() => {
 
 /** ---- utilities ---- **/
 
-const cryptoObj: Crypto = (globalThis.crypto ??
-  // deno-lint-ignore no-explicit-any
-  (globalThis as any).require?.("crypto")?.webcrypto) as Crypto;
+// Edge-safe WebCrypto resolution with an explicit injection hook for Node.
+// No require() usage.
+let cryptoImpl: Crypto | undefined = (globalThis as { crypto?: Crypto }).crypto;
+
+/** Provide a WebCrypto implementation when `globalThis.crypto` is absent. */
+export function setCrypto(crypto: Crypto): void {
+  cryptoImpl = crypto;
+}
+
+function requireCrypto(): Crypto {
+  if (!cryptoImpl || typeof cryptoImpl.getRandomValues !== "function") {
+    throw new Error(
+      "WebCrypto not available. Use setCrypto(webcrypto) in Node.",
+    );
+  }
+  return cryptoImpl;
+}
 
 function assert(cond: boolean, msg = "assertion failed"): asserts cond {
   if (!cond) throw new Error(msg);
@@ -27,20 +41,9 @@ function toHex(bytes: Uint8Array): string {
   return [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-// intentionally unused utility (reserved for future I/O helpers)
-function _fromHex(hex: string): Uint8Array {
-  const clean = hex.startsWith("0x") ? hex.slice(2) : hex;
-  assert(clean.length % 2 === 0, "bad hex length");
-  const out = new Uint8Array(clean.length / 2);
-  for (let i = 0; i < out.length; i++) {
-    out[i] = parseInt(clean.slice(i * 2, i * 2 + 2), 16);
-  }
-  return out;
-}
-
 function rnd(n: number): Uint8Array {
   const a = new Uint8Array(n);
-  cryptoObj.getRandomValues(a);
+  requireCrypto().getRandomValues(a);
   return a;
 }
 
@@ -49,17 +52,6 @@ function beBytesToBigInt(b: Uint8Array): bigint {
   let x = 0n;
   for (const v of b) x = (x << 8n) | BigInt(v);
   return x;
-}
-
-/** bigint -> big-endian bytes (fixed len) */
-// intentionally unused utility (reserved for future I/O helpers)
-function _bigIntToBeBytes(x: bigint, len: number): Uint8Array {
-  const out = new Uint8Array(len);
-  for (let i = len - 1; i >= 0; i--) {
-    out[i] = Number(x & 0xffn);
-    x >>= 8n;
-  }
-  return out;
 }
 
 /** ---- canonical helpers ---- **/
@@ -285,13 +277,4 @@ export function asCanonical(s: string): U256Hex {
  * const { v0, v1, hr, short } = example();
  * ```
  */
-export function example(): {
-  v0: U256Hex;
-  v1: U256Hex;
-  hr: string;
-  short: string;
-} {
-  const v0 = u256idV0();
-  const hr = toBase58(v0);
-  return { v0, v1: u256idV1(), hr, short: toShort(v0) };
-}
+// (Moved examples to a separate package: packages/examples)

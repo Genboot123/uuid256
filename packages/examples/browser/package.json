@@ -1,0 +1,11 @@
+{
+  "name": "u256id-examples-browser",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "node serve.mjs"
+  },
+  "dependencies": {
+    "u256id": "file:../../sdk/npm"
+  }
+}

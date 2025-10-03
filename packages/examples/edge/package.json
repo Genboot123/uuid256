@@ -1,0 +1,11 @@
+{
+  "name": "u256id-examples-edge",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test.mjs"
+  },
+  "dependencies": {
+    "u256id": "file:../../sdk/npm"
+  }
+}
