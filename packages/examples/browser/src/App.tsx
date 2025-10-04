@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { uuid256 } from "uuid256";
+import { generateUuidV7, uuidToU256 } from "uuid256";
 import { DEFAULT_CHAIN, CONTRACT_ADDRESS } from "./config/constants";
 import { useWallet } from "./hooks/useWallet";
 import { useNFTMint } from "./hooks/useNFTMint";
@@ -43,13 +43,13 @@ export function App() {
   };
 
   const handleGenerate = () => {
-    const newUuid = uuid256.generateUuidV7();
+    const newUuid = generateUuidV7();
     setUuid(newUuid);
     setCurrentStep(2);
   };
 
   const handleBridge = () => {
-    const bridged = uuid256.uuidToU256(uuid);
+    const bridged = uuidToU256(uuid);
     setUint256(bridged.toString());
     setCurrentStep(3);
   };

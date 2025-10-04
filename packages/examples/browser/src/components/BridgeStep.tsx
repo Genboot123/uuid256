@@ -9,14 +9,14 @@ interface BridgeStepProps {
 }
 
 export function BridgeStep({ uuid, uint256, onBridge, isActive }: BridgeStepProps) {
-  const codeExample = `import { uuid256 } from "uuid256";
+  const codeExample = `import { uuidToU256, u256ToUuid } from "uuid256";
 
 // Convert UUID to uint256 for on-chain use
-const uint256Id = uuid256.uuidToU256("${uuid || "01948b2e-5890-7000-8000-0123456789ab"}");
+const uint256Id = uuidToU256("${uuid || "01948b2e-5890-7000-8000-0123456789ab"}");
 // => ${uint256 || "2139208346887946264002379554693398187n"}
 
 // Convert back to UUID (reversible!)
-const recoveredUuid = uuid256.u256ToUuid(${uint256 || "2139208346887946264002379554693398187n"});
+const recoveredUuid = u256ToUuid(${uint256 || "2139208346887946264002379554693398187n"});
 // => "${uuid || "01948b2e-5890-7000-8000-0123456789ab"}"`;
 
   return (

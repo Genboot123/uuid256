@@ -8,7 +8,7 @@
     "clean": "rm -rf node_modules"
   },
   "dependencies": {
-    "uuid256": "^0.0.8",
+    "uuid256": "^0.1.1",
     "viem": "^2.37.12"
   },
   "devDependencies": {

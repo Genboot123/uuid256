@@ -3,6 +3,7 @@ import type { Chain } from "viem/chains";
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ethereum?: any;
   }
 }
@@ -14,7 +15,7 @@ export function useWallet(chain: Chain) {
   const connectWallet = useCallback(async () => {
     try {
       setError("");
-      
+
       if (!window.ethereum) {
         throw new Error("Please install MetaMask or another Web3 wallet");
       }
@@ -30,6 +31,7 @@ export function useWallet(chain: Chain) {
           method: "wallet_switchEthereumChain",
           params: [{ chainId: `0x${chain.id.toString(16)}` }],
         });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (switchError: any) {
         // Chain not added, try to add it
         if (switchError.code === 4902) {
@@ -62,4 +64,3 @@ export function useWallet(chain: Chain) {
     connectWallet,
   };
 }
-

@@ -1,4 +1,4 @@
-import { uuid256 } from "uuid256";
+import { generateUuidV7, uuidToU256 } from "uuid256";
 import { createWalletClient, createPublicClient, http } from "viem";
 import { baseSepolia } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
@@ -29,9 +29,9 @@ async function main() {
   const wallet = createWalletClient({ account, chain, transport: http() });
   const publicClient = createPublicClient({ chain, transport: http() });
 
-  const uuid = uuid256.generateUuidV7();
+  const uuid = generateUuidV7();
   console.log("[Node]  UUID:", uuid);
-  const bridged = uuid256.uuidToU256(uuid);
+  const bridged = uuidToU256(uuid);
   console.log("[Node]  Bridged:", bridged);
   const tokenId = BigInt(bridged);
   console.log("[Node]  Token ID:", tokenId);

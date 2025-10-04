@@ -4,7 +4,7 @@
     "": {
       "name": "u256id-examples-bun",
       "dependencies": {
-        "uuid256": "^0.0.8",
+        "uuid256": "^0.1.1",
         "viem": "^2.37.12",
       },
       "devDependencies": {
@@ -52,7 +52,7 @@
 
     "undici-types": ["undici-types@6.21.0", "", {}, "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="],
 
-    "uuid256": ["uuid256@0.0.8", "", {}, "sha512-SC1Wmf1ys1BInjxOTv/VElYbtypB1Cb5odbop3dgD9g+1QAEZe4c6HSG47ITiut+GojjK3d7TaXr2iNsSBXH1Q=="],
+    "uuid256": ["uuid256@0.1.1", "", {}, "sha512-bGSkljCnFQqs84ut1LPeqzJ3J3bxBA5QKZ3eLRBkkgyBIMZ3+e3iaq2cIv/ydj/raSeeSFHy54JdbHtQ1OrYdg=="],
 
     "viem": ["viem@2.37.12", "", { "dependencies": { "@noble/curves": "1.9.1", "@noble/hashes": "1.8.0", "@scure/bip32": "1.7.0", "@scure/bip39": "1.6.0", "abitype": "1.1.0", "isows": "1.0.7", "ox": "0.9.6", "ws": "8.18.3" }, "peerDependencies": { "typescript": ">=5.0.4" }, "optionalPeers": ["typescript"] }, "sha512-87lIfGNrAxrfxuM3TCxRET8cj5LvrLZABwJuilHGvijIrPZHZVFv3alquaRx0vvrfSP4QeIcnV/QaO/w2iXbsQ=="],
 

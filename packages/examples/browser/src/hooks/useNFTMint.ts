@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { uuid256 } from "uuid256";
+import { uuidToU256 } from "uuid256";
 import {
   createWalletClient,
   createPublicClient,
@@ -48,7 +48,7 @@ export function useNFTMint(chain: Chain, account: string) {
         });
 
         console.log(`[Browser]  UUID: ${uuid}`);
-        const bridged = uuid256.uuidToU256(uuid);
+        const bridged = uuidToU256(uuid);
         console.log(`[Browser]  Bridged: ${bridged}`);
         console.log(`[Browser]  Token ID: ${tokenId}`);
 

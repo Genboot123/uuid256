@@ -1,4 +1,4 @@
-import { uuid256 } from "uuid256";
+import { generateUuidV7, uuidToU256 } from "uuid256";
 import { ethers } from "ethers";
 
 const CONTRACT_ADDRESS = "0xb081A8327db8e5c6BbDC13d9C452b13ef37a941c";
@@ -42,9 +42,9 @@ const worker = {
       );
 
       // Generate UUID and bridge to uint256
-      const uuid = uuid256.generateUuidV7();
+      const uuid = generateUuidV7();
       console.log("[Edge]  UUID:", uuid);
-      const bridged = uuid256.uuidToU256(uuid);
+      const bridged = uuidToU256(uuid);
       console.log("[Edge]  Bridged:", bridged.substring(0, 20) + "...");
       const tokenId = BigInt(bridged);
       console.log("[Edge]  Token ID:", tokenId);

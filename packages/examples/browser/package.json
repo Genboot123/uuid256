@@ -14,7 +14,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwindcss": "^4.1.14",
-    "uuid256": "^0.0.8",
+    "uuid256": "^0.1.1",
     "viem": "^2.37.12"
   },
   "devDependencies": {

@@ -24,8 +24,8 @@ importers:
         specifier: ^4.1.14
         version: 4.1.14
       uuid256:
-        specifier: ^0.0.8
-        version: 0.0.8
+        specifier: ^0.1.1
+        version: 0.1.1
       viem:
         specifier: ^2.37.12
         version: 2.37.12(typescript@5.9.3)
@@ -1293,8 +1293,8 @@ packages:
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
 
-  uuid256@0.0.8:
-    resolution: {integrity: sha512-SC1Wmf1ys1BInjxOTv/VElYbtypB1Cb5odbop3dgD9g+1QAEZe4c6HSG47ITiut+GojjK3d7TaXr2iNsSBXH1Q==}
+  uuid256@0.1.1:
+    resolution: {integrity: sha512-bGSkljCnFQqs84ut1LPeqzJ3J3bxBA5QKZ3eLRBkkgyBIMZ3+e3iaq2cIv/ydj/raSeeSFHy54JdbHtQ1OrYdg==}
 
   viem@2.37.12:
     resolution: {integrity: sha512-87lIfGNrAxrfxuM3TCxRET8cj5LvrLZABwJuilHGvijIrPZHZVFv3alquaRx0vvrfSP4QeIcnV/QaO/w2iXbsQ==}
@@ -2478,7 +2478,7 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  uuid256@0.0.8: {}
+  uuid256@0.1.1: {}
 
   viem@2.37.12(typescript@5.9.3):
     dependencies:
