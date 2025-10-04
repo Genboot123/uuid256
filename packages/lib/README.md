@@ -95,19 +95,11 @@ deno add jsr:posaune0423/uuid256
 ### Quick start
 
 ```ts
-import { uuid256 } from "uuid256";
+import { generateUuidV7, u256ToUuid, uuidToU256 } from "uuid256";
 
-const uuid = uuid256.generateUuidV7();
-const tokenId = uuid256.uuidToU256(uuid); // 0x + 64 hex (lower 128 = uuid, upper 128 = 0)
-const back = uuid256.u256ToUuid(tokenId); // validates upper 128 bits are zero
-```
-
-Node CJS with WebCrypto injection (if needed):
-
-```js
-const { uuid256 } = require("uuid256");
-const { webcrypto } = require("node:crypto");
-uuid256.setCrypto(webcrypto);
+const uuid = generateUuidV7();
+const tokenId = uuidToU256(uuid); // 0x + 64 hex (lower 128 = uuid, upper 128 = 0)
+const back = u256ToUuid(tokenId); // validates upper 128 bits are zero
 ```
 
 ### Numeric example
