@@ -16,6 +16,7 @@ export {
   generateUuidV7,
   isUuid,
   isUuidV7,
+  toCanonicalU256Hex,
   u256ToUuid,
   uuidToU256,
 } from "./lib.ts";

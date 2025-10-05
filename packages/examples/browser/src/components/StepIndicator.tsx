@@ -21,10 +21,9 @@ export function StepIndicator({ currentStep, steps }: StepIndicatorProps) {
           />
         </div>
 
-        {steps.map((step, index) => {
+        {steps.map((step) => {
           const isCompleted = step.id < currentStep;
           const isCurrent = step.id === currentStep;
-          const isUpcoming = step.id > currentStep;
 
           return (
             <div key={step.id} className="flex flex-col items-center flex-1">

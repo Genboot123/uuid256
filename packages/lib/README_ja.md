@@ -178,6 +178,8 @@ UUID（RFC 4122）と EVM `uint256` の相互ブリッジを定義します（�
 - `asUuidV7(s: string): Uuid` — 不正形式は `INVALID_UUID_FORMAT`。
 - `uuidToU256(uuid: string): U256Hex` — 正準 `0x+64hex` を返す（上位 128 = 0）。
 - `u256ToUuid(id: string): Uuid` — `INVALID_U256_FORMAT` / `UPPER128_NOT_ZERO`。
+- `toCanonicalU256Hex(x: bigint): U256Hex` — returns canonical `0x` + 64
+  lowercase hex
 
 ## サンプル
 

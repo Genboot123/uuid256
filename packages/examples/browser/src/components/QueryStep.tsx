@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { uuid256 } from "uuid256";
+import { uuidToU256, u256ToUuid } from "uuid256";
 import { createPublicClient, http, type Chain } from "viem";
 import { CodeBlock } from "./CodeBlock";
 import { CONTRACT_ABI } from "../config/constants";
@@ -40,13 +40,13 @@ export function QueryStep({ chain, contractAddress, uuid, uint256, isActive, onQ
       if (queryType === "uuid") {
         // Convert UUID to uint256
         queriedUuid = queryInput;
-        queriedUint256 = uuid256.uuidToU256(queryInput);
+        queriedUint256 = uuidToU256(queryInput);
         tokenId = BigInt(queriedUint256);
       } else {
         // Use uint256 directly and convert to UUID
         queriedUint256 = queryInput;
         tokenId = BigInt(queryInput);
-        queriedUuid = uuid256.u256ToUuid(queriedUint256);
+        queriedUuid = u256ToUuid(queriedUint256);
       }
 
       // Query tokenURI from contract

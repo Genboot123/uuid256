@@ -85,7 +85,7 @@ export function generateUuidV7(): Uuid {
  * @param x - The bigint value to convert.
  * @returns A canonical `0x`-prefixed 64-nybble hex string.
  */
-function toCanonicalU256Hex(x: bigint): U256Hex {
+export function toCanonicalU256Hex(x: bigint): U256Hex {
   return ("0x" + x.toString(16).padStart(64, "0")) as U256Hex;
 }
 

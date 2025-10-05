@@ -188,6 +188,8 @@ described in RFC 2119.
   hex (upper 128 bits are zero)
 - `u256ToUuid(id: string): Uuid` — throws `INVALID_U256_FORMAT` or
   `UPPER128_NOT_ZERO`
+- `toCanonicalU256Hex(x: bigint): U256Hex` — returns canonical `0x` + 64
+  lowercase hex
 
 ## Examples
 
